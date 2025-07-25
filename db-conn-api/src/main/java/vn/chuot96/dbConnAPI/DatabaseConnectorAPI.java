@@ -1,13 +1,13 @@
-package vn.chuot96.database_connector;
+package vn.chuot96.dbConnAPI;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DatabaseConnectorApplication {
+public class DatabaseConnectorAPI {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DatabaseConnectorApplication.class, args);
+		SpringApplication.run(DatabaseConnectorAPI.class, args);
 	}
 
 }
