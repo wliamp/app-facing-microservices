@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.chuot96.dbConnAPI.dto.RequestDTO;
-import vn.chuot96.dbConnAPI.util.SQLConverter;
+import vn.chuot96.dbConnAPI.util.SqlConverter;
 
 import java.sql.*;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sql")
-public class SQLController {
+public class SqlController {
     @PostMapping("/query")
     public ResponseEntity<?> query(@RequestBody RequestDTO request) {
         String jdbcUrl;
@@ -46,7 +46,7 @@ public class SQLController {
             try (Connection conn = DriverManager.getConnection(jdbcUrl, request.getUsername(), request.getPassword())) {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(request.getQuery());
-                List<Map<String, Object>> result = SQLConverter.convert(rs);
+                List<Map<String, Object>> result = SqlConverter.convert(rs);
                 return ResponseEntity.ok(result);
             }
         } catch (ClassNotFoundException e) {

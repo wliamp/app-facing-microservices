@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SQLConverter {
+public class SqlConverter {
     public static List<Map<String, Object>> convert(ResultSet rs) throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<>();
         ResultSetMetaData meta = rs.getMetaData();
