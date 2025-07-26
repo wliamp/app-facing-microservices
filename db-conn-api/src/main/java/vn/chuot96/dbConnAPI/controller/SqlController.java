@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.chuot96.dbConnAPI.dto.RequestDTO;
+import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
 import vn.chuot96.dbConnAPI.util.SqlConverter;
 
 import java.sql.*;
@@ -16,12 +16,12 @@ import java.util.Map;
 @RequestMapping("/api/sql")
 public class SqlController {
     @PostMapping("/query")
-    public ResponseEntity<?> query(@RequestBody RequestDTO request) {
+    public ResponseEntity<?> query(@RequestBody SqlRequestDTO request) {
         String jdbcUrl;
         String driverClass;
         String host = request.getHost();
         String port = request.getPort();
-        String schema = request.getSchema();
+        String schema = request.getDatabase();
 
         switch (request.getType().toLowerCase()) {
             case "mysql" -> {
