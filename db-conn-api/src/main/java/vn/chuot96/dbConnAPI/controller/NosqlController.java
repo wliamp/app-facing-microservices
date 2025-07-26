@@ -13,26 +13,20 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/nosql")
 public class NosqlController {
-    @PostMapping("/query")
-    public ResponseEntity<?> query(@RequestBody NosqlRequestDTO request) {
-        String type = request.getType().toLowerCase();
-        String operation = request.getOperation();
-        String schema = request.getSchema();
-        String collection = request.getQuery();
+    @PostMapping("/mongodb")
+    public ResponseEntity<?> mongodb(@RequestBody NosqlRequestDTO request) {
+        String database = request.getDatabase();
+        String collection = request.getCollection();
         Map<String, Object> data = request.getData();
         String uri = String.format("mongodb://%s:%s@%s:%s",
                 request.getUsername(), request.getPassword(), request.getHost(), request.getPort());
-        switch (type) {
-            case "mongodb":
-                return switch (operation) {
-                    case "insert" -> MongodbHandler.insert(data, uri, schema, collection);
-//                    case "find" -> MongodbHandler.find(data, uri, schema, collection);
-//                    case "update" -> MongodbHandler.update(data, uri, schema, collection);
-//                    case "delete" -> MongodbHandler.delete(data, uri, schema, collection);
-                    default -> ResponseEntity.badRequest().body("Unsupported operation: " + operation);
-                };
-            default:
-                return ResponseEntity.badRequest().body("Unsupported NoSQL type: " + type);
-        }
+        return switch (request.getOperation().toLowerCase()) {
+            case "insert" -> MongodbHandler.insert(data, uri, database, collection);
+            case "find" -> MongodbHandler.find(data, uri, database, collection);
+            case "update" -> MongodbHandler.update(data, uri, database, collection);
+            case "delete" -> MongodbHandler.delete(data, uri, database, collection);
+            default -> ResponseEntity.badRequest().body("Unsupported operation: " + request.getOperation().toUpperCase());
+        };
     }
 }
+
