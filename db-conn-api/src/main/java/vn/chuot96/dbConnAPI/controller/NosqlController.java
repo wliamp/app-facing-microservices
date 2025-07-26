@@ -20,12 +20,12 @@ public class NosqlController {
         Map<String, Object> data = request.getData();
         String uri = String.format("mongodb://%s:%s@%s:%s",
                 request.getUsername(), request.getPassword(), request.getHost(), request.getPort());
-        return switch (request.getOperation().toLowerCase()) {
-            case "insert" -> MongodbHandler.insert(data, uri, database, collection);
-            case "find" -> MongodbHandler.find(data, uri, database, collection);
-            case "update" -> MongodbHandler.update(data, uri, database, collection);
-            case "delete" -> MongodbHandler.delete(data, uri, database, collection);
-            default -> ResponseEntity.badRequest().body("Unsupported operation: " + request.getOperation().toUpperCase());
+        return switch (request.getOperation()) {
+            case INSERT -> MongodbHandler.insert(data, uri, database, collection);
+            case FIND -> MongodbHandler.find(data, uri, database, collection);
+            case UPDATE -> MongodbHandler.update(data, uri, database, collection);
+            case DELETE -> MongodbHandler.delete(data, uri, database, collection);
+            default -> ResponseEntity.badRequest().body("Unsupported operation: " + request.getOperation());
         };
     }
 }

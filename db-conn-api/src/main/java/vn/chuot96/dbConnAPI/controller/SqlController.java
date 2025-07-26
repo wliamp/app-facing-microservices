@@ -23,16 +23,16 @@ public class SqlController {
         String port = request.getPort();
         String schema = request.getDatabase();
 
-        switch (request.getType().toLowerCase()) {
-            case "mysql" -> {
+        switch (request.getType()) {
+            case MYSQL -> {
                 driverClass = "com.mysql.cj.jdbc.Driver";
                 jdbcUrl = String.format("jdbc:mysql://%s:%s/%s", host, port, schema);
             }
-            case "postgres" -> {
+            case POSTGRES -> {
                 driverClass = "org.postgresql.Driver";
                 jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s", host, port, schema);
             }
-            case "mssql" -> {
+            case MSSQL -> {
                 driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
                 jdbcUrl = String.format("jdbc:sqlserver://%s:%s;databaseName=%s", host, port, schema);
             }
