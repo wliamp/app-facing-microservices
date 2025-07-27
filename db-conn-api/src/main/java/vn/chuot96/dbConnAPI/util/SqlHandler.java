@@ -1,5 +1,6 @@
 package vn.chuot96.dbConnAPI.util;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
 
@@ -13,8 +14,9 @@ public class SqlHandler {
     public static ResponseEntity<?> execute(String driverClass, String jdbcUrl, SqlRequestDTO request) {
         try {
             Class.forName(driverClass);
-            try (Connection conn = DriverManager.getConnection(jdbcUrl, request.getUsername(), request.getPassword())) {
-                Statement stmt = conn.createStatement();
+            try (Connection conn = DriverManager.getConnection(jdbcUrl, request.getUsername(), request.getPassword());
+                 Statement stmt = conn.createStatement()) {
+
                 String query = request.getQuery().trim().toLowerCase();
 
                 if (query.startsWith("select")) {
@@ -23,15 +25,22 @@ public class SqlHandler {
                     return ResponseEntity.ok(result);
                 } else {
                     int affected = stmt.executeUpdate(request.getQuery());
-                    Map<String, Object> response = Map.of("affectedRows", affected,
-                            "message", "Operation executed successfully");
-                    return ResponseEntity.ok(response);
+                    return ResponseEntity.ok(Map.of(
+                            "affectedRows", affected,
+                            "message", "Operation successful"
+                    ));
                 }
+
             }
         } catch (ClassNotFoundException e) {
-            return ResponseEntity.status(500).body("Driver Not Found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Driver not found: " + e.getMessage());
         } catch (SQLException e) {
-            return ResponseEntity.status(500).body("SQL Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("SQL Error: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error: " + e.getMessage());
         }
     }
 
