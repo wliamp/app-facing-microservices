@@ -2,7 +2,6 @@ package vn.chuot96.dbConnAPI.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import vn.chuot96.dbConnAPI.constant.NosqlOperation;
 
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class NosqlRequestDTO extends RequestDTO {
     private String collection;
-    private NosqlOperation operation; // insert, update, delete, find
     private Map<String, Object> data;    // insert or update
     private Map<String, Object> filter;  // update or delete
 }
