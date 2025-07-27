@@ -1,10 +1,10 @@
-package vn.chuot96.authenAPI;
+package vn.chuot96.tokenIssuerAPI;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GatewayApiApplicationTests {
+class TokenIssuerApplicationTests {
 
 	@Test
 	void contextLoads() {
