@@ -7,23 +7,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
 import vn.chuot96.dbConnAPI.service.SqlService;
-import vn.chuot96.dbConnAPI.util.SqlConverter;
-
-import java.sql.*;
-import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/sql")
+@RequestMapping("/api")
 public class SqlController {
-    private final SqlService service;
 
-    public SqlController(SqlService service) {
-        this.service = service;
+    @PostMapping("/sql/mysql")
+    public ResponseEntity<?> mysql(@RequestBody SqlRequestDTO request) {
+        return SqlService.mysqlQuery(request);
     }
 
-    @PostMapping("/query")
-    public ResponseEntity<?> query(@RequestBody SqlRequestDTO request) {
-        return service.executeQuery(request);
+    @PostMapping("/sql/postgres")
+    public ResponseEntity<?> postgres(@RequestBody SqlRequestDTO request) {
+        return SqlService.postgresQuery(request);
     }
+
+    @PostMapping("/sql/mssql")
+    public ResponseEntity<?> mssql(@RequestBody SqlRequestDTO request) {
+        return SqlService.mssqlQuery(request);
+    }
+
 }
