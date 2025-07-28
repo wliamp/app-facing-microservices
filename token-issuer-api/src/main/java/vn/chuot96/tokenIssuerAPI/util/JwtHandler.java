@@ -1,6 +1,7 @@
 package vn.chuot96.tokenIssuerAPI.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -15,7 +16,7 @@ public class JwtHandler {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> claimsMap = null;
         try {
-            claimsMap = mapper.readValue(formatted, Map.class);
+            claimsMap = mapper.readValue(formatted, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
