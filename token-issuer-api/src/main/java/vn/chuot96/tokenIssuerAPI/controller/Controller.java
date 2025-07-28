@@ -1,7 +1,6 @@
 package vn.chuot96.tokenIssuerAPI.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,7 @@ import vn.chuot96.tokenIssuerAPI.dto.TokenRequestDTO;
 import vn.chuot96.tokenIssuerAPI.service.JwtService;
 
 @RestController
-@RequestMapping("/api/token")
+@RequestMapping("/jwt")
 public class Controller {
 
     private final JwtService service;
