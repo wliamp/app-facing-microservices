@@ -5,93 +5,74 @@ import com.mongodb.client.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static vn.chuot96.databaseConnectorAPI.constant.MongodbURI.PATTERN;
 
 public class MongodbHandler {
 
-    public static ResponseEntity<?> insert(Map<String, Object> requestData, String uri, String dbName, String collectionName) {
+    private static ResponseEntity<?> handleMongoOperation(String uri, MongoOperation operation) {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoCollection<Document> collection = getCollection(mongoClient, dbName, collectionName);
-            Document doc = new Document(requestData);
-            collection.insertOne(doc);
+            return operation.execute(mongoClient);
+        } catch (MongoException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("MongoDB Error: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected Error: " + e.getMessage());
+        }
+    }
+
+    public static ResponseEntity<?> insert(NosqlRequestDTO request) {
+        return handleMongoOperation(PATTERN.setUri(request), client -> {
+            getCollection(client, request.getDatabase(), request.getCollection()).insertOne(new Document(request.getData()));
             return ResponseEntity.ok("Inserted successfully");
-        } catch (MongoException | IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body("MongoDB Error: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected Error: " + e.getMessage());
-        }
+        });
     }
 
-    public static ResponseEntity<?> find(Map<String, Object> filterData, String uri, String dbName, String collectionName) {
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoCollection<Document> collection = getCollection(mongoClient, dbName, collectionName);
-            Document filter = new Document(filterData);
-            FindIterable<Document> result = collection.find(filter);
-
-            List<Map<String, Object>> list = new ArrayList<>();
-            for (Document doc : result) {
-                list.add(doc);
+    public static ResponseEntity<?> find(NosqlRequestDTO request) {
+        return handleMongoOperation(PATTERN.setUri(request), client -> {
+            FindIterable<Document> docs = getCollection(client, request.getDatabase(), request.getCollection()).find(new Document(request.getFilter()));
+            List<Map<String, Object>> results = new ArrayList<>();
+            for (Document doc : docs) {
+                results.add(doc);
             }
-            return ResponseEntity.ok(list);
-        } catch (MongoException | IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body("MongoDB Error: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected Error: " + e.getMessage());
-        }
+            return ResponseEntity.ok(results);
+        });
     }
 
-    public static ResponseEntity<?> update(Map<String, Object> requestData, String uri, String dbName, String collectionName) {
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoCollection<Document> collection = getCollection(mongoClient, dbName, collectionName);
+    public static ResponseEntity<?> update(NosqlRequestDTO request) {
+        return handleMongoOperation(PATTERN.setUri(request), client -> {
+            Map<String, Object> filter = (Map<String, Object>) request.getData().get("filter");
+            Map<String, Object> update = (Map<String, Object>) request.getData().get("update");
 
-            Map<String, Object> filterMap = (Map<String, Object>) requestData.get("filter");
-            Map<String, Object> updateMap = (Map<String, Object>) requestData.get("update");
-
-            if (filterMap == null || updateMap == null) {
-                return ResponseEntity.badRequest().body("Update request must contain 'filter' and 'update' fields.");
+            if (filter == null || update == null) {
+                return ResponseEntity.badRequest().body("Missing 'filter' or 'update'");
             }
 
-            Document filterDoc = new Document(filterMap);
-            Document updateDoc = new Document("$set", new Document(updateMap));
-
-            UpdateResult result = collection.updateMany(filterDoc, updateDoc);
+            UpdateResult result = getCollection(client, request.getDatabase(), request.getCollection())
+                    .updateMany(new Document(filter), new Document("$set", new Document(update)));
             return ResponseEntity.ok("Updated documents: " + result.getModifiedCount());
-        } catch (MongoException | IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body("MongoDB Error: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected Error: " + e.getMessage());
-        }
+        });
     }
 
-    public static ResponseEntity<?> delete(Map<String, Object> filterData, String uri, String dbName, String collectionName) {
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoCollection<Document> collection = getCollection(mongoClient, dbName, collectionName);
-            Document filter = new Document(filterData);
-            DeleteResult result = collection.deleteMany(filter);
+    public static ResponseEntity<?> delete(NosqlRequestDTO request) {
+        return handleMongoOperation(PATTERN.setUri(request), client -> {
+            DeleteResult result = getCollection(client, request.getDatabase(), request.getCollection()).deleteMany(new Document(request.getFilter()));
             return ResponseEntity.ok("Deleted documents: " + result.getDeletedCount());
-        } catch (MongoException | IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body("MongoDB Error: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected Error: " + e.getMessage());
-        }
+        });
     }
 
     private static MongoCollection<Document> getCollection(MongoClient client, String dbName, String collectionName) {
-        MongoDatabase db = client.getDatabase(dbName);
-        return db.getCollection(collectionName);
+        return client.getDatabase(dbName).getCollection(collectionName);
     }
 
+    @FunctionalInterface
+    private interface MongoOperation {
+        ResponseEntity<?> execute(MongoClient client);
+    }
 }

@@ -5,43 +5,77 @@ import org.springframework.http.ResponseEntity;
 import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static vn.chuot96.databaseConnectorAPI.constant.SqlJdbcURL.*;
 
 public class SqlHandler {
     public static ResponseEntity<?> execute(String driverClass, String jdbcUrl, SqlRequestDTO request) {
+        if (driverClass == null
+                || driverClass.isBlank()
+                || jdbcUrl == null
+                || jdbcUrl.isBlank()
+                || request == null
+                || request.getQuery() == null
+                || request.getQuery().isBlank()
+                || request.getUsername() == null
+                || request.getPassword() == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
+        }
+
         try {
             Class.forName(driverClass);
+
             try (Connection conn = DriverManager.getConnection(jdbcUrl, request.getUsername(), request.getPassword());
                  Statement stmt = conn.createStatement()) {
 
-                String query = request.getQuery().trim().toLowerCase();
+                String rawQuery = request.getQuery().trim();
+                String loweredQuery = rawQuery.toLowerCase(Locale.ROOT);
 
-                if (query.startsWith("select")) {
-                    ResultSet rs = stmt.executeQuery(request.getQuery());
-                    List<Map<String, Object>> result = convert(rs);
-                    return ResponseEntity.ok(result);
+                if (isSelectQuery(loweredQuery)) {
+                    try (ResultSet rs = stmt.executeQuery(rawQuery)) {
+                        List<Map<String, Object>> result = convert(rs);
+                        return ResponseEntity.ok(Map.of(
+                                "rows", result,
+                                "count", result.size()
+                        ));
+                    }
                 } else {
-                    int affected = stmt.executeUpdate(request.getQuery());
+                    int affectedRows = stmt.executeUpdate(rawQuery);
                     return ResponseEntity.ok(Map.of(
-                            "affectedRows", affected,
-                            "message", "Operation successful"
+                            "affectedRows", affectedRows,
+                            "message", "Operation executed successfully"
                     ));
                 }
 
             }
         } catch (ClassNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Driver not found: " + e.getMessage());
+                    .body(Map.of("error", "JDBC Driver not found",
+                            "details", e.getMessage()));
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body("SQL Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "SQL Error",
+                            "details", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected error: " + e.getMessage());
+                    .body(Map.of("error", "Unexpected error",
+                            "details", e.getMessage()));
         }
+    }
+
+
+    public static ResponseEntity<?> mysqlQuery(SqlRequestDTO request) {
+        return execute(MYSQL.getDriverClass(), MYSQL.setJdbcUrl(request), request);
+    }
+
+    public static ResponseEntity<?> postgresQuery(SqlRequestDTO request) {
+        return execute(POSTGRES.getDriverClass(), POSTGRES.setJdbcUrl(request), request);
+    }
+
+    public static ResponseEntity<?> mssqlQuery(SqlRequestDTO request) {
+        return execute(MSSQL.getDriverClass(), MSSQL.setJdbcUrl(request), request);
     }
 
     private static List<Map<String, Object>> convert(ResultSet rs) throws SQLException {
@@ -58,4 +92,9 @@ public class SqlHandler {
         }
         return rows;
     }
+
+    private static boolean isSelectQuery(String query) {
+        return Pattern.compile("^\\s*select\\b", Pattern.CASE_INSENSITIVE).matcher(query).find();
+    }
+
 }
