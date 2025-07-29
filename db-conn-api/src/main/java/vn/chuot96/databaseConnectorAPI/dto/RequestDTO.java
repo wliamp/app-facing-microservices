@@ -1,4 +1,4 @@
-package vn.chuot96.dbConnAPI.dto;
+package vn.chuot96.databaseConnectorAPI.dto;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
-package vn.chuot96.dbConnAPI.constant;
+package vn.chuot96.databaseConnectorAPI.constant;
 
 import lombok.Getter;
 import org.springframework.web.bind.annotation.RequestBody;
-import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
+import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
 
 @Getter
 public enum SqlJdbcURL {

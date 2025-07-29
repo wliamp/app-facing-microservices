@@ -1,7 +1,7 @@
-package vn.chuot96.dbConnAPI.constant;
+package vn.chuot96.databaseConnectorAPI.constant;
 
 import org.springframework.web.bind.annotation.RequestBody;
-import vn.chuot96.dbConnAPI.dto.NosqlRequestDTO;
+import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
 
 public enum MongodbURI {
     PATTERN("mongodb://%s:%s@%s:%s");

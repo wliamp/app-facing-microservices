@@ -1,12 +1,12 @@
-package vn.chuot96.dbConnAPI.service;
+package vn.chuot96.databaseConnectorAPI.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
-import vn.chuot96.dbConnAPI.util.SqlHandler;
+import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
+import vn.chuot96.databaseConnectorAPI.util.SqlHandler;
 
-import static vn.chuot96.dbConnAPI.constant.SqlJdbcURL.*;
+import static vn.chuot96.databaseConnectorAPI.constant.SqlJdbcURL.*;
 
 @Service
 public class SqlService {

@@ -1,12 +1,12 @@
-package vn.chuot96.dbConnAPI.service;
+package vn.chuot96.databaseConnectorAPI.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import vn.chuot96.dbConnAPI.dto.NosqlRequestDTO;
-import vn.chuot96.dbConnAPI.util.MongodbHandler;
+import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
+import vn.chuot96.databaseConnectorAPI.util.MongodbHandler;
 
-import static vn.chuot96.dbConnAPI.constant.MongodbURI.PATTERN;
+import static vn.chuot96.databaseConnectorAPI.constant.MongodbURI.PATTERN;
 
 @Service
 public class MongodbService {

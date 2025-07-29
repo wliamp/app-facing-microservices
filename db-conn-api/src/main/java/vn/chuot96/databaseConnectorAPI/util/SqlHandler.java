@@ -1,8 +1,8 @@
-package vn.chuot96.dbConnAPI.util;
+package vn.chuot96.databaseConnectorAPI.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import vn.chuot96.dbConnAPI.dto.SqlRequestDTO;
+import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
 
 import java.sql.*;
 import java.util.ArrayList;

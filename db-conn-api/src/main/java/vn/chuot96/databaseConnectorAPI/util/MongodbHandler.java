@@ -1,4 +1,4 @@
-package vn.chuot96.dbConnAPI.util;
+package vn.chuot96.databaseConnectorAPI.util;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.*;

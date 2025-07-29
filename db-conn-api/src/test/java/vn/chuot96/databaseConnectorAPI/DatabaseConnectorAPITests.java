@@ -1,4 +1,4 @@
-package vn.chuot96.dbConnAPI;
+package vn.chuot96.databaseConnectorAPI;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
