@@ -1,6 +1,5 @@
 package vn.chuot96.databaseConnectorAPI.constant;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
 
 public enum MongodbURI {
@@ -12,7 +11,7 @@ public enum MongodbURI {
         this.pattern = pattern;
     }
 
-    public String setUri(@RequestBody NosqlRequestDTO request) {
+    public String setUri(NosqlRequestDTO request) {
         return String.format(pattern, request.getUsername(), request.getPassword(), request.getHost(), request.getPort());
     }
 }

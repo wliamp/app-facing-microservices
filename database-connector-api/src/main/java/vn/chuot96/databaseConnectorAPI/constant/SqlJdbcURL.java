@@ -1,7 +1,6 @@
 package vn.chuot96.databaseConnectorAPI.constant;
 
 import lombok.Getter;
-import org.springframework.web.bind.annotation.RequestBody;
 import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
 
 @Getter
@@ -23,7 +22,7 @@ public enum SqlJdbcURL {
         this.pattern = pattern;
     }
 
-    public String setJdbcUrl(@RequestBody SqlRequestDTO request) {
+    public String setJdbcUrl(SqlRequestDTO request) {
         return String.format(pattern, request.getHost(), request.getPort(), request.getDatabase());
     }
 
