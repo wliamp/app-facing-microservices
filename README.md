@@ -1,17 +1,50 @@
 # 🔧 Spring Boot API Portfolio
 
-This repository contains multiple Spring Boot API projects for personal learning, demo, and portfolio purposes.
+This repository contains modular Spring Boot API projects designed for learning, demonstrations, and backend service architecture.
 
 ## 📁 Projects
 
-- [Authentication & Authorization API](./user-auth-api) – API for user registration, login, JWT-based authentication and role-based authorization.
-- [Database Connector API](./db-conn-api) – Dynamic connector API for accessing and querying SQL/NoSQL databases at runtime.
-- [File Converter API](./file-convert-api) – File converter API that transforms documents between formats like DOCX ⇄ PDF or XLSX ⇄ CSV.
-- [Client Gateway API](./client-gw-api) - Gateway API that routes requests, validates JWT tokens, and rate-limits client access to services.
+- [Database Connector API](./database-connector-api) – A dynamic API that connects to various SQL and NoSQL databases at runtime to execute queries securely and flexibly.
 
-Each project has its own README and can run independently.
+- [Token Issuer API](./token-issuer-api) – Stateless service responsible for issuing, verifying, and refreshing different types of JWT tokens (access, refresh, service).
+
+- [Client Gateway API](./client-gateway-api) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
+
+Each module is independently runnable and documented in its own README.md file.
 
 ---
 
-🧑‍💻 Author: William Phan  
-📫 Contact: phnam230197@gmail.com
+### 🛠 Contribute
+
+If you’d like to contribute or share your code, **do not commit directly to 'main'**
+
+Please create a new branch using the allowed proper prefixes below:
+
+feature/
+
+bugfix/
+
+hotfix/
+
+dev/
+
+release/
+#### ⚠️ If you don’t use a proper prefix, your branch might not be protected and could be modified by others
+Then open a Pull Request (PR) to merge into 'main'
+#### ➡️ All changes will be reviewed before merging, use meaningful branch names and commit messages
+
+---
+
+### ⚖️ License:
+This repository is licensed under the [MIT License](./LICENSE)
+
+---
+
+### 🧑‍💻 Author:
+[William Phan](https://github.com/phnam2301)
+
+---
+
+### 📫 Contact:
+`phnam230197@gmail.com`
+
