@@ -1,14 +1,19 @@
-package vn.chuot96.authen3rdAPI.service;
+package vn.chuot96.authen3rdAPI.component;
 
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import vn.chuot96.authen3rdAPI.dto.UserDTO;
 import vn.chuot96.authen3rdAPI.exception.InvalidTokenException;
 
-@Service
-public class GoogleAuthenService {
+@Component("google")
+public class GoogleAuthProvider implements AuthProvider {
+    @Override
+    public String getProviderName() {
+        return "google";
+    }
 
-    public static UserDTO verifyToken(Jwt jwt) {
+    @Override
+    public UserDTO verifyToken(Jwt jwt) throws InvalidTokenException {
         try {
             return new UserDTO(
                     jwt.getClaimAsString("email"),
@@ -20,5 +25,4 @@ public class GoogleAuthenService {
             throw new InvalidTokenException("JWT does not contain required claims or has invalid format.", e);
         }
     }
-
 }
