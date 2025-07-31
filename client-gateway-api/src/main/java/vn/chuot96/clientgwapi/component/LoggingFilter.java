@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI.component;
+package vn.chuot96.clientgwapi.component;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

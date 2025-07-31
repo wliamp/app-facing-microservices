@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI.controller;
+package vn.chuot96.clientgwapi.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI.config;
+package vn.chuot96.clientgwapi.config;
 
 import io.netty.channel.ChannelOption;
 import org.springframework.context.annotation.Bean;

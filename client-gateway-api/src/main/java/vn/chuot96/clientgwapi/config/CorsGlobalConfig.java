@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI.config;
+package vn.chuot96.clientgwapi.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
