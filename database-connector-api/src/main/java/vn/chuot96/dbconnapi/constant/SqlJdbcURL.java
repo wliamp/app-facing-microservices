@@ -1,7 +1,7 @@
-package vn.chuot96.databaseConnectorAPI.constant;
+package vn.chuot96.dbconnapi.constant;
 
 import lombok.Getter;
-import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
 
 @Getter
 public enum SqlJdbcURL {

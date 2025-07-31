@@ -1,14 +1,14 @@
-package vn.chuot96.databaseConnectorAPI.controller;
+package vn.chuot96.dbconnapi.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
-import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
-import vn.chuot96.databaseConnectorAPI.util.MongodbHandler;
-import vn.chuot96.databaseConnectorAPI.util.SqlHandler;
+import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
+import vn.chuot96.dbconnapi.util.MongodbHandler;
+import vn.chuot96.dbconnapi.util.SqlHandler;
 
 @RestController
 @RequestMapping("/db")
