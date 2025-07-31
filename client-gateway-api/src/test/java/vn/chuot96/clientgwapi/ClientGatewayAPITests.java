@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI;
+package vn.chuot96.clientgwapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

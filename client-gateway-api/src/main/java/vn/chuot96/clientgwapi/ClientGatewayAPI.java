@@ -1,4 +1,4 @@
-package vn.chuot96.clientGatewayAPI;
+package vn.chuot96.clientgwapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
