@@ -12,14 +12,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class JwtConfig {
+public class TokenConfig {
+
     @Value("${jwt.secret}")
     private String secret;
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        String secret = "0123456789ABCDEF0123456789ABCDEF"; // 32 ký tự
         SecretKey secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey));
     }
+
 }

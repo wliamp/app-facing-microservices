@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ClientGatewayApplication {
+public class ClientGatewayAPI {
 
     public static void main(String[] args) {
-        SpringApplication.run(ClientGatewayApplication.class, args);
+        SpringApplication.run(ClientGatewayAPI.class, args);
     }
 
 }
