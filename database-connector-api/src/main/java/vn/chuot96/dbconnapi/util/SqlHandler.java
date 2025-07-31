@@ -1,14 +1,14 @@
-package vn.chuot96.databaseConnectorAPI.util;
+package vn.chuot96.dbconnapi.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import vn.chuot96.databaseConnectorAPI.dto.SqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
 
 import java.sql.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static vn.chuot96.databaseConnectorAPI.constant.SqlJdbcURL.*;
+import static vn.chuot96.dbconnapi.constant.SqlJdbcURL.*;
 
 public class SqlHandler {
     public static ResponseEntity<?> execute(String driverClass, String jdbcUrl, SqlRequestDTO request) {

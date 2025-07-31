@@ -1,4 +1,4 @@
-package vn.chuot96.databaseConnectorAPI.util;
+package vn.chuot96.dbconnapi.util;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
@@ -7,11 +7,11 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 
 import java.util.*;
 
-import static vn.chuot96.databaseConnectorAPI.constant.MongodbURI.PATTERN;
+import static vn.chuot96.dbconnapi.constant.MongodbURI.PATTERN;
 
 public class MongodbHandler {
 

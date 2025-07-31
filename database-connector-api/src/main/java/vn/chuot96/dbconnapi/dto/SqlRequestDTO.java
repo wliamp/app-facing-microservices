@@ -1,4 +1,4 @@
-package vn.chuot96.databaseConnectorAPI.dto;
+package vn.chuot96.dbconnapi.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,6 @@
-package vn.chuot96.databaseConnectorAPI.constant;
+package vn.chuot96.dbconnapi.constant;
 
-import vn.chuot96.databaseConnectorAPI.dto.NosqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 
 public enum MongodbURI {
     PATTERN("mongodb://%s:%s@%s:%s");

@@ -1,4 +1,4 @@
-package vn.chuot96.databaseConnectorAPI;
+package vn.chuot96.dbconnapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
