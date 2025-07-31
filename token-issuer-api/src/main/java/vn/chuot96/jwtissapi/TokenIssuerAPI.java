@@ -1,4 +1,4 @@
-package vn.chuot96.tokenIssuerAPI;
+package vn.chuot96.jwtissapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

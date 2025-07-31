@@ -1,4 +1,4 @@
-package vn.chuot96.tokenIssuerAPI.controller;
+package vn.chuot96.jwtissapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.chuot96.tokenIssuerAPI.dto.TokenRequestDTO;
-import vn.chuot96.tokenIssuerAPI.service.TokenService;
+import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
+import vn.chuot96.jwtissapi.service.TokenService;
 
 @RestController
 @RequestMapping("/jwt")
