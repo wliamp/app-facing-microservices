@@ -1,0 +1,58 @@
+package vn.chuot96.dbconnapi.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
+import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
+import vn.chuot96.dbconnapi.util.MongodbHandler;
+import vn.chuot96.dbconnapi.util.SqlHandler;
+
+@RestController
+@RequestMapping("/db")
+public class Controller {
+
+    @PostMapping("/sql/mysql")
+    public ResponseEntity<?> mysql(@RequestBody SqlRequestDTO request) {
+        return SqlHandler.mysqlQuery(request);
+    }
+
+    @PostMapping("/sql/postgres")
+    public ResponseEntity<?> postgres(@RequestBody SqlRequestDTO request) {
+        return SqlHandler.postgresQuery(request);
+    }
+
+    @PostMapping("/sql/mssql")
+    public ResponseEntity<?> mssql(@RequestBody SqlRequestDTO request) {
+        return SqlHandler.mssqlQuery(request);
+    }
+
+    // --> more SQL type here
+
+    @PostMapping("/nosql/mongodb/insert")
+    public ResponseEntity<?> mongodbInsert(@RequestBody NosqlRequestDTO request) {
+        return MongodbHandler.insert(request);
+    }
+
+    @PostMapping("/nosql/mongodb/find")
+    public ResponseEntity<?> mongodbFind(@RequestBody NosqlRequestDTO request) {
+        return MongodbHandler.find(request);
+    }
+
+    @PostMapping("/nosql/mongodb/update")
+    public ResponseEntity<?> mongodbUpdate(@RequestBody NosqlRequestDTO request) {
+        return MongodbHandler.update(request);
+    }
+
+    @PostMapping("/nosql/mongodb/delete")
+    public ResponseEntity<?> mongodbDelete(@RequestBody NosqlRequestDTO request) {
+        return MongodbHandler.delete(request);
+    }
+
+    // --> More operation here
+
+    // --> More NoSQL type here
+
+}
