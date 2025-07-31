@@ -8,10 +8,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static vn.chuot96.dbconnapi.constant.SqlJdbcURL.*;
-
 public class SqlHandler {
-    public static ResponseEntity<?> execute(String driverClass, String jdbcUrl, SqlRequestDTO request) {
+
+    public ResponseEntity<?> execute(String driverClass, String jdbcUrl, SqlRequestDTO request) {
         if (driverClass == null
                 || driverClass.isBlank()
                 || jdbcUrl == null
@@ -65,20 +64,7 @@ public class SqlHandler {
         }
     }
 
-
-    public static ResponseEntity<?> mysqlQuery(SqlRequestDTO request) {
-        return execute(MYSQL.getDriverClass(), MYSQL.setJdbcUrl(request), request);
-    }
-
-    public static ResponseEntity<?> postgresQuery(SqlRequestDTO request) {
-        return execute(POSTGRES.getDriverClass(), POSTGRES.setJdbcUrl(request), request);
-    }
-
-    public static ResponseEntity<?> mssqlQuery(SqlRequestDTO request) {
-        return execute(MSSQL.getDriverClass(), MSSQL.setJdbcUrl(request), request);
-    }
-
-    private static List<Map<String, Object>> convert(ResultSet rs) throws SQLException {
+    private List<Map<String, Object>> convert(ResultSet rs) throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<>();
         ResultSetMetaData meta = rs.getMetaData();
         int columnCount = meta.getColumnCount();
@@ -93,7 +79,7 @@ public class SqlHandler {
         return rows;
     }
 
-    private static boolean isSelectQuery(String query) {
+    private boolean isSelectQuery(String query) {
         return Pattern.compile("^\\s*select\\b", Pattern.CASE_INSENSITIVE).matcher(query).find();
     }
 
