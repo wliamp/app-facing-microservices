@@ -1,4 +1,4 @@
-package vn.chuot96.authen3rdAPI.constant;
+package vn.chuot96.auth3rdapi.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

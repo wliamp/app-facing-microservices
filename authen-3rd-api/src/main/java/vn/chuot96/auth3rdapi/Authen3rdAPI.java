@@ -1,4 +1,4 @@
-package vn.chuot96.authen3rdAPI;
+package vn.chuot96.auth3rdapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
