@@ -10,6 +10,8 @@ This repository contains modular Spring Boot API projects designed for learning,
 
 - [Client Gateway API](./client-gateway-api) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
 
+- [Third Authentication Provider API](./authen-3rd-api) – Handles third-party authentication via OAuth (Google, Facebook) and OTP, forwarding verified identities to the JWT issuer service for token generation.
+
 Each module is independently runnable and documented in its own README.md file.
 
 ---
