@@ -1,7 +1,7 @@
 package vn.chuot96.authen3rdAPI.component;
 
 import org.springframework.stereotype.Component;
-import vn.chuot96.authen3rdAPI.dto.ResponseDTO;
+import vn.chuot96.authen3rdAPI.dto.UserDTO;
 import vn.chuot96.authen3rdAPI.util.OtpHandler;
 
 import static vn.chuot96.authen3rdAPI.constant.AuthProvider.FIREBASE;
@@ -15,8 +15,8 @@ public class FirebaseOtpProvider implements OtpProvider {
     }
 
     @Override
-    public ResponseDTO verifyToken(String token) {
-        return new ResponseDTO(FIREBASE.getKey(), OtpHandler.firebaseProvider(token));
+    public UserDTO verifyToken(String token) {
+        return new UserDTO(FIREBASE.getKey(), OtpHandler.firebaseProvider(token));
     }
 
 }
