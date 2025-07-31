@@ -21,4 +21,11 @@ public class TokenController {
         return ResponseEntity.ok(service.generateAccess(request));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh(@RequestBody TokenRequestDTO request) {
+        return ResponseEntity.ok(service.generateRefresh(request));
+    }
+
+    // --> more Token type here
+
 }
