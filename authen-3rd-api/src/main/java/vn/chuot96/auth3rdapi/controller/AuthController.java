@@ -1,11 +1,11 @@
-package vn.chuot96.authen3rdAPI.controller;
+package vn.chuot96.auth3rdapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.chuot96.authen3rdAPI.dto.RequestDTO;
-import vn.chuot96.authen3rdAPI.service.OauthService;
-import vn.chuot96.authen3rdAPI.service.OtpService;
+import vn.chuot96.auth3rdapi.dto.RequestDTO;
+import vn.chuot96.auth3rdapi.service.OauthService;
+import vn.chuot96.auth3rdapi.service.OtpService;
 
 @RestController
 @RequestMapping("/verify")

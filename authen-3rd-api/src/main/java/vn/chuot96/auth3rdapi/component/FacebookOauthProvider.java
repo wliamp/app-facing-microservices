@@ -1,10 +1,10 @@
-package vn.chuot96.authen3rdAPI.component;
+package vn.chuot96.auth3rdapi.component;
 
 import org.springframework.stereotype.Component;
-import vn.chuot96.authen3rdAPI.dto.UserDTO;
-import vn.chuot96.authen3rdAPI.util.OauthHandler;
+import vn.chuot96.auth3rdapi.dto.UserDTO;
+import vn.chuot96.auth3rdapi.util.OauthHandler;
 
-import static vn.chuot96.authen3rdAPI.constant.AuthProvider.FACEBOOK;
+import static vn.chuot96.auth3rdapi.constant.AuthProvider.FACEBOOK;
 
 @Component("facebook")
 public class FacebookOauthProvider implements OauthProvider {
