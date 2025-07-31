@@ -1,4 +1,4 @@
-package vn.chuot96.tokenIssuerAPI.config;
+package vn.chuot96.jwtissapi.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;

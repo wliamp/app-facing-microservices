@@ -1,12 +1,12 @@
-package vn.chuot96.tokenIssuerAPI.util;
+package vn.chuot96.jwtissapi.util;
 
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import vn.chuot96.tokenIssuerAPI.dto.TokenRequestDTO;
+import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import static vn.chuot96.tokenIssuerAPI.constant.Token.REFRESH_TOKEN;
+import static vn.chuot96.jwtissapi.constant.Token.REFRESH_TOKEN;
 
 public class RefreshTokenHandler extends TokenHandler{
     @Override

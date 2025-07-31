@@ -1,4 +1,4 @@
-package vn.chuot96.tokenIssuerAPI.constant;
+package vn.chuot96.jwtissapi.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

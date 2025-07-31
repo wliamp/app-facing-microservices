@@ -1,4 +1,4 @@
-package vn.chuot96.tokenIssuerAPI.util;
+package vn.chuot96.jwtissapi.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import vn.chuot96.tokenIssuerAPI.dto.TokenRequestDTO;
+import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
 
 import java.util.Map;
 

@@ -1,11 +1,11 @@
-package vn.chuot96.tokenIssuerAPI.service;
+package vn.chuot96.jwtissapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
-import vn.chuot96.tokenIssuerAPI.dto.TokenRequestDTO;
-import vn.chuot96.tokenIssuerAPI.util.AccessTokenHandler;
-import vn.chuot96.tokenIssuerAPI.util.RefreshTokenHandler;
+import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
+import vn.chuot96.jwtissapi.util.AccessTokenHandler;
+import vn.chuot96.jwtissapi.util.RefreshTokenHandler;
 
 @Service
 @RequiredArgsConstructor
