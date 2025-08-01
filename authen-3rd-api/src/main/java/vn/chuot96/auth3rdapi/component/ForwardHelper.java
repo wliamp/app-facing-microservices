@@ -14,12 +14,13 @@ public class ForwardHelper {
 
     private final WebClient.Builder webClient;
 
-    public <T, R> Mono<R> post(String sub, String uri, T requestBody, Class<R> responseType) {
+    public <T, R> Mono<R> post(String sub, String uri, String headerValue, T requestBody, Class<R> responseType) {
         return webClient
                 .baseUrl("http://" + sub)
                 .build()
                 .post()
                 .uri(uri)
+                .header("X-Service-Token",headerValue)
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(
