@@ -3,7 +3,6 @@ package vn.chuot96.auth3rdapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.chuot96.auth3rdapi.component.OauthProvider;
-import vn.chuot96.auth3rdapi.dto.TokenResponseDTO;
 import vn.chuot96.auth3rdapi.dto.UserDTO;
 import vn.chuot96.auth3rdapi.exception.NoSupportedProviderException;
 
@@ -17,7 +16,7 @@ public class OauthService {
 
     private final List<OauthProvider> providers;
 
-    public TokenResponseDTO verifyToken(String provider, String token) {
+    public UserDTO verifyToken(String provider, String token) {
         return providers.stream()
                 .filter(p -> p.getProviderName().equalsIgnoreCase(provider))
                 .findFirst()
