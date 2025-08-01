@@ -1,8 +1,8 @@
 package vn.chuot96.auth3rdapi.component;
 
-import vn.chuot96.auth3rdapi.dto.TokenResponseDTO;
+import vn.chuot96.auth3rdapi.dto.UserDTO;
 
 public interface OauthProvider {
     String getProviderName();
-    TokenResponseDTO verifyToken(String token);
+    UserDTO verifyToken(String token);
 }
