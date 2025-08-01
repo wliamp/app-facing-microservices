@@ -1,4 +1,4 @@
-package vn.chuot96.auth3rdapi.config;
+package vn.chuot96.verify3rdapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

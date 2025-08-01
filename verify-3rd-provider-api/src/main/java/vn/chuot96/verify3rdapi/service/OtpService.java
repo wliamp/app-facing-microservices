@@ -1,14 +1,14 @@
-package vn.chuot96.auth3rdapi.service;
+package vn.chuot96.verify3rdapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import vn.chuot96.auth3rdapi.component.OtpProvider;
-import vn.chuot96.auth3rdapi.dto.UserDTO;
-import vn.chuot96.auth3rdapi.exception.NoSupportedProviderException;
+import vn.chuot96.verify3rdapi.component.OtpProvider;
+import vn.chuot96.verify3rdapi.dto.UserDTO;
+import vn.chuot96.verify3rdapi.exception.NoSupportedProviderException;
 
 import java.util.List;
 
-import static vn.chuot96.auth3rdapi.constant.AuthMessage.NOT_FOUND_OTP;
+import static vn.chuot96.verify3rdapi.constant.AuthMessage.NOT_FOUND_OTP;
 
 @Service
 @RequiredArgsConstructor

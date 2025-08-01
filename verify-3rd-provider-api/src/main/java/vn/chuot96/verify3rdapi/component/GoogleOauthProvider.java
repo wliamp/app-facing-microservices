@@ -1,10 +1,10 @@
-package vn.chuot96.auth3rdapi.component;
+package vn.chuot96.verify3rdapi.component;
 
 import org.springframework.stereotype.Component;
-import vn.chuot96.auth3rdapi.dto.UserDTO;
-import vn.chuot96.auth3rdapi.util.OauthHandler;
+import vn.chuot96.verify3rdapi.dto.UserDTO;
+import vn.chuot96.verify3rdapi.util.OauthHandler;
 
-import static vn.chuot96.auth3rdapi.constant.AuthProvider.GOOGLE;
+import static vn.chuot96.verify3rdapi.constant.AuthProvider.GOOGLE;
 
 @Component("google")
 public class GoogleOauthProvider implements OauthProvider {

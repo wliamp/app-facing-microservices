@@ -1,4 +1,4 @@
-package vn.chuot96.auth3rdapi.util;
+package vn.chuot96.verify3rdapi.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,11 +6,11 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.web.client.RestTemplate;
-import vn.chuot96.auth3rdapi.dto.UserDTO;
-import vn.chuot96.auth3rdapi.exception.InvalidTokenException;
+import vn.chuot96.verify3rdapi.dto.UserDTO;
+import vn.chuot96.verify3rdapi.exception.InvalidTokenException;
 
-import static vn.chuot96.auth3rdapi.constant.AuthMessage.*;
-import static vn.chuot96.auth3rdapi.constant.AuthProvider.*;
+import static vn.chuot96.verify3rdapi.constant.AuthMessage.*;
+import static vn.chuot96.verify3rdapi.constant.AuthProvider.*;
 
 public class OauthHandler {
 

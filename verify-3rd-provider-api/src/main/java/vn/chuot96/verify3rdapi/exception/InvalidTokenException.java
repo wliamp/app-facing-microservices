@@ -1,4 +1,4 @@
-package vn.chuot96.auth3rdapi.exception;
+package vn.chuot96.verify3rdapi.exception;
 
 public class InvalidTokenException extends RuntimeException {
     public InvalidTokenException(String message, Throwable cause) {
