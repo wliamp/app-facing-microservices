@@ -1,13 +1,13 @@
-package vn.chuot96.auth3rdapi.controller;
+package vn.chuot96.verify3rdapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import vn.chuot96.auth3rdapi.service.ForwardService;
-import vn.chuot96.auth3rdapi.service.OauthService;
-import vn.chuot96.auth3rdapi.service.OtpService;
+import vn.chuot96.verify3rdapi.service.ForwardService;
+import vn.chuot96.verify3rdapi.service.OauthService;
+import vn.chuot96.verify3rdapi.service.OtpService;
 
 @RestController
 @RequiredArgsConstructor

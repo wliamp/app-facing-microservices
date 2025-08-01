@@ -1,4 +1,4 @@
-package vn.chuot96.auth3rdapi.exception;
+package vn.chuot96.verify3rdapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,12 @@
-package vn.chuot96.auth3rdapi.util;
+package vn.chuot96.verify3rdapi.util;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
-import vn.chuot96.auth3rdapi.exception.InvalidTokenException;
+import vn.chuot96.verify3rdapi.exception.InvalidTokenException;
 
-import static vn.chuot96.auth3rdapi.constant.AuthMessage.*;
-import static vn.chuot96.auth3rdapi.constant.AuthProvider.*;
+import static vn.chuot96.verify3rdapi.constant.AuthMessage.*;
+import static vn.chuot96.verify3rdapi.constant.AuthProvider.*;
 
 public class OtpHandler {
 
