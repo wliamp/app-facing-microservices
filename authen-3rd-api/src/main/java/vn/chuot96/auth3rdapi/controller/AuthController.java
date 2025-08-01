@@ -17,7 +17,7 @@ public class AuthController {
     private final OtpService otpService;
 
     @PostMapping("/{provider}")
-    public ResponseEntity<?> verifyOauth(@PathVariable String provider, @RequestBody TokenRequestDTO request) {
+    public ResponseEntity<?> verifyOauth(@PathVariable String provider, @RequestBody TokenRequestDTO request) 
         return ResponseEntity.ok(oauthService.verifyToken(provider, request.token()));
     }
 
