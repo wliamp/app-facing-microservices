@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Authen3rdAPI {
+public class Verify3rdProviderAPI {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Authen3rdAPI.class, args);
+		SpringApplication.run(Verify3rdProviderAPI.class, args);
 	}
 
 }
