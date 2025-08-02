@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static vn.chuot96.dbconnapi.constant.MongodbURI.PATTERN;
+import static vn.chuot96.dbconnapi.constant.MongodbURI.MONGODB;
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +27,17 @@ public class MongodbService {
     private final ObjectMapper mapper;
 
     public ResponseEntity<?> insert(NosqlRequestDTO request) {
-        return handler.handleMongoOperation(PATTERN.setUri(request), client -> {
-            handler.getCollection(client, request.getDatabase(), request.getCollection()).insertOne(new Document(request.getData()));
+        return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
+            handler.getCollection(client, request.getDatabase(),
+                    request.getCollection()).insertOne(new Document(request.getData()));
             return ResponseEntity.ok("Inserted successfully");
         });
     }
 
     public ResponseEntity<?> find(NosqlRequestDTO request) {
-        return handler.handleMongoOperation(PATTERN.setUri(request), client -> {
-            FindIterable<Document> docs = handler.getCollection(client, request.getDatabase(), request.getCollection()).find(new Document(request.getFilter()));
+        return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
+            FindIterable<Document> docs = handler.getCollection(client, request.getDatabase(),
+                    request.getCollection()).find(new Document(request.getFilter()));
             List<Map<String, Object>> results = new ArrayList<>();
             for (Document doc : docs) {
                 results.add(doc);
@@ -45,34 +47,30 @@ public class MongodbService {
     }
 
     public ResponseEntity<?> update(NosqlRequestDTO request) {
-        return handler.handleMongoOperation(PATTERN.setUri(request), client -> {
+        return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
             Object filterObj = request.getData().get("filter");
             Object updateObj = request.getData().get("update");
-
             if (filterObj == null || updateObj == null) {
                 return ResponseEntity.badRequest().body("Missing 'filter' or 'update'");
             }
-
             Map<String, Object> filter;
             Map<String, Object> update;
-
             try {
                 filter = mapper.convertValue(filterObj, new TypeReference<>() {});
                 update = mapper.convertValue(updateObj, new TypeReference<>() {});
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().body("Invalid 'filter' or 'update' format: " + e.getMessage());
             }
-
             UpdateResult result = handler.getCollection(client, request.getDatabase(), request.getCollection())
                     .updateMany(new Document(filter), new Document("$set", new Document(update)));
-
             return ResponseEntity.ok("Updated documents: " + result.getModifiedCount());
         });
     }
 
     public ResponseEntity<?> delete(NosqlRequestDTO request) {
-        return handler.handleMongoOperation(PATTERN.setUri(request), client -> {
-            DeleteResult result = handler.getCollection(client, request.getDatabase(), request.getCollection()).deleteMany(new Document(request.getFilter()));
+        return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
+            DeleteResult result = handler.getCollection(client, request.getDatabase(),
+                    request.getCollection()).deleteMany(new Document(request.getFilter()));
             return ResponseEntity.ok("Deleted documents: " + result.getDeletedCount());
         });
     }

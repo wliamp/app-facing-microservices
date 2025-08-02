@@ -3,7 +3,7 @@ package vn.chuot96.dbconnapi.dto;
 import lombok.Data;
 
 @Data
-public class RequestDTO {
+public class DbRequestDTO {
     private String host;
     private String port;
     private String username;

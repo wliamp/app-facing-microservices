@@ -1,9 +1,11 @@
 package vn.chuot96.dbconnapi.constant;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
 
 @Getter
+@RequiredArgsConstructor
 public enum SqlJdbcURL {
 
     MYSQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s"),
@@ -16,11 +18,6 @@ public enum SqlJdbcURL {
 
     private final String driverClass;
     private final String pattern;
-
-    SqlJdbcURL(String driverClass, String pattern) {
-        this.driverClass = driverClass;
-        this.pattern = pattern;
-    }
 
     public String setJdbcUrl(SqlRequestDTO request) {
         return String.format(pattern, request.getHost(), request.getPort(), request.getDatabase());

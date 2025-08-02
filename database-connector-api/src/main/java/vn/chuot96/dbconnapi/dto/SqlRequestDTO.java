@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SqlRequestDTO extends RequestDTO {
-    private String query;
+public class SqlRequestDTO extends DbRequestDTO {
+    String query;
 }
 
