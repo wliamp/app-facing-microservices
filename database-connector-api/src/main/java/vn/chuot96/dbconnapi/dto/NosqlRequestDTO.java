@@ -5,10 +5,10 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Map;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
-public class NosqlRequestDTO extends RequestDTO {
+@Data
+public class NosqlRequestDTO extends DbRequestDTO{
     private String collection;
-    private Map<String, Object> data;    // insert or update
-    private Map<String, Object> filter;  // update or delete
+    private Map<String, Object> data;
+    private Map<String, Object> filter;
 }
