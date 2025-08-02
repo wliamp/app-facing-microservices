@@ -18,11 +18,11 @@ public class TokenService {
     private final RefreshTokenHandler refreshTokenHandler;
 
     public String generateAccess(RequestDTO request) {
-        return accessTokenHandler.generate(encoder, );
+        return accessTokenHandler.generate(encoder, request);
     }
 
     public String generateRefresh(RequestDTO request) {
-        return refreshTokenHandler.generate(encoder, );
+        return refreshTokenHandler.generate(encoder, request);
     }
 
     // --> more Token type here
