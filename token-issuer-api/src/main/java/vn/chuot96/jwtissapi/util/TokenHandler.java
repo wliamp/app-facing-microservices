@@ -8,16 +8,16 @@ import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
+import vn.chuot96.jwtissapi.dto.RequestDTO;
 
 import java.util.Map;
 
 public abstract class TokenHandler {
 
     @Value("${jwt.issuer}")
-    protected String iss;
+    protected static String issuer;
 
-    protected String encode(JwtEncoder jwtEncoder, String formattedJson) {
+    protected static String encode(JwtEncoder jwtEncoder, String formattedJson) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> claimsMap;
         try {
@@ -29,12 +29,12 @@ public abstract class TokenHandler {
         JwtClaimsSet.Builder builder = JwtClaimsSet.builder();
         claimsMap.forEach(builder::claim);
 
-        JwsHeader header = JwsHeader.with(() -> "HS256").build();
-        JwtClaimsSet claims = builder.build();
-
-        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+        return jwtEncoder
+                .encode(JwtEncoderParameters
+                .from(JwsHeader.with(() -> "HS256").build(),
+                        builder.build())).getTokenValue();
     }
 
-    public abstract String generate(JwtEncoder jwtEncoder, TokenRequestDTO request);
+    public abstract String generate(JwtEncoder jwtEncoder, RequestDTO request);
 
 }
