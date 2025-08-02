@@ -25,7 +25,7 @@ public enum Token {
               "exp":%d,
               "jti":"%s"
             }""",
-            86400);
+            604800);
 
     // --> more Token type here
 

@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import vn.chuot96.jwtissapi.util.AccessTokenHandler;
+import vn.chuot96.jwtissapi.util.RefreshTokenHandler;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,6 +23,16 @@ public class TokenConfig {
     public JwtEncoder jwtEncoder() {
         SecretKey secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey));
+    }
+
+    @Bean
+    public AccessTokenHandler accessTokenHandler() {
+        return new AccessTokenHandler();
+    }
+
+    @Bean
+    public RefreshTokenHandler refreshTokenHandler() {
+        return new RefreshTokenHandler();
     }
 
 }
