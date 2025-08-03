@@ -34,7 +34,7 @@ You can run it with:
 ./gradlew spotlessApply
 ```
 
-You can also view the formatter rules in the [checkstyle.xml](.checkstyle.xml) file
+You can also view the formatter rules in the [checkstyle](./checkstyle.xml) file
 
 Then open a Pull Request (PR) to merge into 'main'
 
