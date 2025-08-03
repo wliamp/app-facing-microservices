@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class MongodbHandler {
-
     public ResponseEntity<?> handleMongoOperation(String uri, MongoOperation operation) {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             return operation.execute(mongoClient);

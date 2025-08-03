@@ -8,7 +8,6 @@ import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 @RequiredArgsConstructor
 public enum MongodbURI {
     MONGODB("mongodb://%s:%s@%s:%s");
-
     private final String pattern;
 
     public String setUri(NosqlRequestDTO request) {
