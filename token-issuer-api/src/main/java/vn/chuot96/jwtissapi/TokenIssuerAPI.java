@@ -8,7 +8,6 @@ import vn.chuot96.jwtissapi.component.HeaderValueAllowed;
 @SpringBootApplication
 @EnableConfigurationProperties(HeaderValueAllowed.class)
 public class TokenIssuerAPI {
-
     public static void main(String[] args) {
         SpringApplication.run(TokenIssuerAPI.class, args);
     }
