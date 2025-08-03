@@ -10,11 +10,10 @@ public enum AuthProvider {
     FACEBOOK("facebook", "https://graph.facebook.com/me?fields=id,name,email,picture&access_token="),
     FIREBASE("eyJ", "https://securetoken.google.com/PROJECT_ID");
 
-//    AUTH0("auth0", "https://AUTH0_DOMAIN/"),
-//    COGNITO("cognito", "https://cognito-idp.REGION.amazonaws.com/USER_POOL_ID"),
-//    AZURE("azure", "https://login.microsoftonline.com/TENANT_ID/v2.0");
+    //    AUTH0("auth0", "https://AUTH0_DOMAIN/"),
+    //    COGNITO("cognito", "https://cognito-idp.REGION.amazonaws.com/USER_POOL_ID"),
+    //    AZURE("azure", "https://login.microsoftonline.com/TENANT_ID/v2.0");
 
     private final String key;
     private final String endpoint;
-
 }

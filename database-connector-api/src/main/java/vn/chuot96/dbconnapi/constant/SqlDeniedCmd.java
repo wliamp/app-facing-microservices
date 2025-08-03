@@ -1,18 +1,16 @@
 package vn.chuot96.dbconnapi.constant;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
 public enum SqlDeniedCmd {
-
     DROP("drop"),
     TRUNCATE("truncate"),
     SHUTDOWN("shutdown"),
@@ -25,11 +23,9 @@ public enum SqlDeniedCmd {
     LOAD_DATA("load data"),
     ALTER_USER("alter user");
 
+    public static final Set<String> COMMANDS =
+            Stream.of(values()).map(SqlDeniedCmd::getCmd).collect(Collectors.toSet());
     private final String cmd;
-
-    public static final Set<String> COMMANDS = Stream.of(values())
-            .map(SqlDeniedCmd::getCmd)
-            .collect(Collectors.toSet());
 
     public static boolean isDenied(String input) {
         if (input == null) return false;
@@ -40,9 +36,6 @@ public enum SqlDeniedCmd {
     public static Optional<String> findFirstMatch(String input) {
         if (input == null) return Optional.empty();
         String lowerInput = input.toLowerCase(Locale.ROOT);
-        return COMMANDS.stream()
-                .filter(lowerInput::contains)
-                .findFirst();
+        return COMMANDS.stream().filter(lowerInput::contains).findFirst();
     }
-
 }

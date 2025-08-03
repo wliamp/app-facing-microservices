@@ -1,22 +1,21 @@
 package vn.chuot96.dbconnapi.service;
 
+import static vn.chuot96.dbconnapi.constant.MongodbURI.MONGODB;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 import vn.chuot96.dbconnapi.util.MongodbHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static vn.chuot96.dbconnapi.constant.MongodbURI.MONGODB;
 
 @Service
 @RequiredArgsConstructor
@@ -28,16 +27,16 @@ public class MongodbService {
 
     public ResponseEntity<?> insert(NosqlRequestDTO request) {
         return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
-            handler.getCollection(client, request.getDatabase(),
-                    request.getCollection()).insertOne(new Document(request.getData()));
+            handler.getCollection(client, request.getDatabase(), request.getCollection())
+                    .insertOne(new Document(request.getData()));
             return ResponseEntity.ok("Inserted successfully");
         });
     }
 
     public ResponseEntity<?> find(NosqlRequestDTO request) {
         return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
-            FindIterable<Document> docs = handler.getCollection(client, request.getDatabase(),
-                    request.getCollection()).find(new Document(request.getFilter()));
+            FindIterable<Document> docs = handler.getCollection(client, request.getDatabase(), request.getCollection())
+                    .find(new Document(request.getFilter()));
             List<Map<String, Object>> results = new ArrayList<>();
             for (Document doc : docs) {
                 results.add(doc);
@@ -69,10 +68,9 @@ public class MongodbService {
 
     public ResponseEntity<?> delete(NosqlRequestDTO request) {
         return handler.handleMongoOperation(MONGODB.setUri(request), client -> {
-            DeleteResult result = handler.getCollection(client, request.getDatabase(),
-                    request.getCollection()).deleteMany(new Document(request.getFilter()));
+            DeleteResult result = handler.getCollection(client, request.getDatabase(), request.getCollection())
+                    .deleteMany(new Document(request.getFilter()));
             return ResponseEntity.ok("Deleted documents: " + result.getDeletedCount());
         });
     }
-
 }

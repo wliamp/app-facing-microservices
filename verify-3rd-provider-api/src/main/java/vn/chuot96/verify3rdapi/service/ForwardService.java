@@ -13,27 +13,14 @@ public class ForwardService {
     private final ForwardHelper forwardHelper;
 
     public Mono<?> forwardAuthService(UserDTO user) {
-        return forwardHelper.post("authentication-service",
-                        "/auth",
-                        "111-111-111",
-                        user,
-                        UserDTO.class);
+        return forwardHelper.post("authentication-service", "/auth", "111-111-111", user, UserDTO.class);
     }
 
     public Mono<String> forwardJwtJssApiTokens() {
-        return forwardHelper.post("token-issuer-api",
-                        "/issuer/tokens",
-                        "222-222-222",
-                        "",
-                        String.class);
+        return forwardHelper.post("token-issuer-api", "/issuer/tokens", "222-222-222", "", String.class);
     }
 
     public Mono<?> forwardJwtJssApiAccess() {
-        return forwardHelper.post("token-issuer-api",
-                        "/issuer/access",
-                        "333-333-333",
-                        "",
-                        Void.class);
+        return forwardHelper.post("token-issuer-api", "/issuer/access", "333-333-333", "", Void.class);
     }
-
 }

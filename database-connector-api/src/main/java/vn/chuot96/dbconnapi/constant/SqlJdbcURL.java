@@ -7,7 +7,6 @@ import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
 @Getter
 @RequiredArgsConstructor
 public enum SqlJdbcURL {
-
     MYSQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s"),
 
     POSTGRES("org.postgresql.Driver", "jdbc:postgresql://%s:%s/%s"),
@@ -22,5 +21,4 @@ public enum SqlJdbcURL {
     public String setJdbcUrl(SqlRequestDTO request) {
         return String.format(pattern, request.getHost(), request.getPort(), request.getDatabase());
     }
-
 }
