@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Verify3rdProviderAPI {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Verify3rdProviderAPI.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(Verify3rdProviderAPI.class, args);
+    }
 }

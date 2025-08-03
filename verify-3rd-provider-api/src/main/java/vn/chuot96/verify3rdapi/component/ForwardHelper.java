@@ -20,19 +20,16 @@ public class ForwardHelper {
                 .build()
                 .post()
                 .uri(uri)
-                .header("X-Service-Token",headerValue)
+                .header("X-Service-Token", headerValue)
                 .bodyValue(requestBody)
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        clientResponse -> clientResponse.bodyToMono(String.class)
-                                .map(errorBody -> {
-                                    log.error("HTTP error from http://{}{}: {}", sub, uri, errorBody);
-                                    return new RuntimeException("Downstream error: " + errorBody);
-                                })
-                )
+                .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse
+                        .bodyToMono(String.class)
+                        .map(errorBody -> {
+                            log.error("HTTP error from http://{}{}: {}", sub, uri, errorBody);
+                            return new RuntimeException("Downstream error: " + errorBody);
+                        }))
                 .bodyToMono(responseType)
                 .doOnError(error -> log.error("Error during POST to http://{}{}: {}", sub, uri, error.getMessage()));
     }
-
 }

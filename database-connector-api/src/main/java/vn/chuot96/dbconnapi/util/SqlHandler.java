@@ -1,6 +1,6 @@
 package vn.chuot96.dbconnapi.util;
 
-import static vn.chuot96.dbconnapi.constant.SqlConfigParam.DEFAULT_SELECT_LIMIT;
+import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
 
 import java.sql.*;
 import java.util.*;
@@ -54,19 +54,18 @@ public class SqlHandler {
                     try (ResultSet rs = stmt.executeQuery(safeQuery)) {
                         List<Map<String, Object>> result = convert(rs);
                         long duration = System.currentTimeMillis() - start;
-                        return ResponseEntity.ok(
-                                Map.of("rows", result, "count", result.size(), "durationMs", duration));
+                        return ResponseEntity.ok(Map.of(
+                                "rows", result,
+                                "count", result.size(),
+                                "durationMs", duration));
                     }
                 } else {
                     int affectedRows = stmt.executeUpdate(rawQuery);
                     long duration = System.currentTimeMillis() - start;
                     return ResponseEntity.ok(Map.of(
-                            "affectedRows",
-                            affectedRows,
-                            "message",
-                            "Operation executed successfully",
-                            "durationMs",
-                            duration));
+                            "affectedRows", affectedRows,
+                            "message", "Operation executed successfully",
+                            "durationMs", duration));
                 }
             }
 

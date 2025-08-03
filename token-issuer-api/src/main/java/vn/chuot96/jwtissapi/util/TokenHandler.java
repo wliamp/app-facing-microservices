@@ -3,14 +3,13 @@ package vn.chuot96.jwtissapi.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import vn.chuot96.jwtissapi.dto.RequestDTO;
-
-import java.util.Map;
 
 public abstract class TokenHandler {
 
@@ -30,11 +29,9 @@ public abstract class TokenHandler {
         claimsMap.forEach(builder::claim);
 
         return jwtEncoder
-                .encode(JwtEncoderParameters
-                .from(JwsHeader.with(() -> "HS256").build(),
-                        builder.build())).getTokenValue();
+                .encode(JwtEncoderParameters.from(JwsHeader.with(() -> "HS256").build(), builder.build()))
+                .getTokenValue();
     }
 
     public abstract String generate(JwtEncoder jwtEncoder, RequestDTO request);
-
 }

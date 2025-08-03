@@ -12,14 +12,12 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class JwtAuthenConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http
-                .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/public/**").permitAll()
-                        .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults())
-                );
+        http.authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/public/**")
+                        .permitAll()
+                        .anyExchange()
+                        .authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }

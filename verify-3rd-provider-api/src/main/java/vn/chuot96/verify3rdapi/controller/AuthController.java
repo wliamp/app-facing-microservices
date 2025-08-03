@@ -34,5 +34,4 @@ public class AuthController {
                 .then(forward.forwardJwtJssApiTokens())
                 .map(ResponseEntity::ok);
     }
-
 }

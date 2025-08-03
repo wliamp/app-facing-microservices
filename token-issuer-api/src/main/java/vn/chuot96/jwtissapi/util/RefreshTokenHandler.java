@@ -1,12 +1,11 @@
 package vn.chuot96.jwtissapi.util;
 
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import vn.chuot96.jwtissapi.dto.RequestDTO;
+import static vn.chuot96.jwtissapi.constant.Token.REFRESH_TOKEN;
 
 import java.time.Instant;
 import java.util.UUID;
-
-import static vn.chuot96.jwtissapi.constant.Token.REFRESH_TOKEN;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import vn.chuot96.jwtissapi.dto.RequestDTO;
 
 public class RefreshTokenHandler extends TokenHandler {
 
@@ -21,8 +20,7 @@ public class RefreshTokenHandler extends TokenHandler {
                 issuer,
                 now.getEpochSecond(),
                 exp,
-                jti
-        );
+                jti);
 
         return encode(jwtEncoder, formatted);
     }

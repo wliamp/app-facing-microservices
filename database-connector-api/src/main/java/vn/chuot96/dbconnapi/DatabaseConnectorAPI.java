@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
             org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class
         })
 public class DatabaseConnectorAPI {
-
     public static void main(String[] args) {
         SpringApplication.run(DatabaseConnectorAPI.class, args);
     }

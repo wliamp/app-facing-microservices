@@ -15,7 +15,6 @@ public class SqlConnectionPool {
 
     public DataSource getDataSource(String driverClass, String jdbcUrl, String username, String password) {
         String key = jdbcUrl + ":" + username;
-
         return dataSourceMap.computeIfAbsent(key, k -> {
             HikariConfig config = new HikariConfig();
             config.setDriverClassName(driverClass);

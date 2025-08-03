@@ -1,12 +1,11 @@
 package vn.chuot96.jwtissapi.util;
 
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import vn.chuot96.jwtissapi.dto.RequestDTO;
+import static vn.chuot96.jwtissapi.constant.Token.ACCESS_TOKEN;
 
 import java.time.Instant;
 import java.util.UUID;
-
-import static vn.chuot96.jwtissapi.constant.Token.ACCESS_TOKEN;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import vn.chuot96.jwtissapi.dto.RequestDTO;
 
 public class AccessTokenHandler extends TokenHandler {
 
@@ -23,10 +22,8 @@ public class AccessTokenHandler extends TokenHandler {
                 exp,
                 jti,
                 request.scope(),
-                request.audience()
-        );
+                request.audience());
 
         return encode(jwtEncoder, formatted);
     }
-
 }

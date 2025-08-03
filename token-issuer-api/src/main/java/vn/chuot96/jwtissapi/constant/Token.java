@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Token {
-
-    ACCESS_TOKEN("""
+    ACCESS_TOKEN(
+            """
                     {"sub":"%s",
                     "iss":"%s",
                     "iat":%d,
@@ -17,7 +17,8 @@ public enum Token {
                     "aud":"%s"}""",
             3600),
 
-    REFRESH_TOKEN("""
+    REFRESH_TOKEN(
+            """
             {
               "sub":"%s",
               "iss":"%s",
@@ -31,5 +32,4 @@ public enum Token {
 
     private final String pattern;
     private final long duration;
-
 }

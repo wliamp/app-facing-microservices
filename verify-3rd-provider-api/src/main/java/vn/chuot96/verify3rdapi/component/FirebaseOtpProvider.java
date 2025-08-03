@@ -1,10 +1,10 @@
 package vn.chuot96.verify3rdapi.component;
 
+import static vn.chuot96.verify3rdapi.constant.AuthProvider.FIREBASE;
+
 import org.springframework.stereotype.Component;
 import vn.chuot96.verify3rdapi.dto.UserDTO;
 import vn.chuot96.verify3rdapi.util.OtpHandler;
-
-import static vn.chuot96.verify3rdapi.constant.AuthProvider.FIREBASE;
 
 @Component
 public class FirebaseOtpProvider implements OtpProvider {
@@ -18,5 +18,4 @@ public class FirebaseOtpProvider implements OtpProvider {
     public UserDTO verifyToken(String token) {
         return new UserDTO(FIREBASE.getKey(), OtpHandler.firebaseProvider(token));
     }
-
 }

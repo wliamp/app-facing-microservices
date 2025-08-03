@@ -25,7 +25,6 @@ public enum SqlDeniedCmd {
 
     public static final Set<String> COMMANDS =
             Stream.of(values()).map(SqlDeniedCmd::getCmd).collect(Collectors.toSet());
-
     private final String cmd;
 
     public static boolean isDenied(String input) {
