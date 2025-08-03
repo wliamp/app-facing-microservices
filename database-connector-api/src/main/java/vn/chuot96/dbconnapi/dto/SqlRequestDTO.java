@@ -8,4 +8,3 @@ import lombok.EqualsAndHashCode;
 public class SqlRequestDTO extends DbRequestDTO {
     String query;
 }
-

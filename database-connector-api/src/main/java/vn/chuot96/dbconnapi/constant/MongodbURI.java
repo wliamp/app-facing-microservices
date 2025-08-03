@@ -7,13 +7,11 @@ import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 @Getter
 @RequiredArgsConstructor
 public enum MongodbURI {
-
     MONGODB("mongodb://%s:%s@%s:%s");
-
     private final String pattern;
 
     public String setUri(NosqlRequestDTO request) {
-        return String.format(pattern, request.getUsername(), request.getPassword(), request.getHost(), request.getPort());
+        return String.format(
+                pattern, request.getUsername(), request.getPassword(), request.getHost(), request.getPort());
     }
-
 }

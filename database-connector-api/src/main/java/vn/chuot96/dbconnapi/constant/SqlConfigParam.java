@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SqlConfigParam {
-
     MAXIMUM_POOL_SIZE(10),
     CONNECTION_TIMEOUT(5000),
     IDLE_TIMEOUT(30000),
@@ -14,5 +13,4 @@ public enum SqlConfigParam {
     DEFAULT_SELECT_LIMIT(1000);
 
     private final long value;
-
 }
