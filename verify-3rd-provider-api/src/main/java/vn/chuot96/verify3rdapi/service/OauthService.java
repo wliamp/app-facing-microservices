@@ -4,7 +4,9 @@ import static vn.chuot96.verify3rdapi.constant.AuthMessage.NOT_FOUND_OAUTH;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import vn.chuot96.verify3rdapi.component.OauthProvider;
 import vn.chuot96.verify3rdapi.dto.UserDTO;
 import vn.chuot96.verify3rdapi.exception.NoSupportedProviderException;
@@ -12,6 +14,7 @@ import vn.chuot96.verify3rdapi.exception.NoSupportedProviderException;
 @Service
 @RequiredArgsConstructor
 public class OauthService {
+    private final ForwardService forwardService;
 
     private final List<OauthProvider> providers;
 
@@ -21,5 +24,12 @@ public class OauthService {
                 .findFirst()
                 .map(p -> p.verifyToken(token))
                 .orElseThrow(() -> new NoSupportedProviderException(NOT_FOUND_OAUTH.getMessage()));
+    }
+
+    public Mono<ResponseEntity<?>> forward(String provider, String token) {
+        return forwardService
+                .forwardAuthServiceLogin(verifyToken(provider, token))
+                .then(forwardService.forwardJwtIssApiAccessRefresh())
+                .map(ResponseEntity::ok);
     }
 }
