@@ -16,12 +16,12 @@ public class TokenController {
 
     @PostMapping("/tokens")
     public ResponseEntity<?> issue(@RequestBody RequestDTO request) {
-        return ResponseEntity.ok(new ResponseDTO(service.generateAccess(request), service.generateRefresh(request)));
+        return ResponseEntity.ok(new ResponseDTO(service.issueAccess(request), service.issueRefresh(request)));
     }
 
     @PostMapping("/access")
     public ResponseEntity<?> issueAccess(@RequestBody RequestDTO request) {
-        return ResponseEntity.ok(service.generateAccess(request));
+        return ResponseEntity.ok(service.issueAccess(request));
     }
 
     // --> more Token type here
