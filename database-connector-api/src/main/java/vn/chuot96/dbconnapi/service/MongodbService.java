@@ -1,22 +1,21 @@
 package vn.chuot96.dbconnapi.service;
 
+import static vn.chuot96.dbconnapi.constant.MongodbURI.MONGODB;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import vn.chuot96.dbconnapi.dto.NosqlRequestDTO;
 import vn.chuot96.dbconnapi.util.MongodbHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static vn.chuot96.dbconnapi.constant.MongodbURI.MONGODB;
 
 @Service
 @RequiredArgsConstructor
@@ -56,10 +55,8 @@ public class MongodbService {
             Map<String, Object> filter;
             Map<String, Object> update;
             try {
-                filter = mapper.convertValue(filterObj, new TypeReference<>() {
-                });
-                update = mapper.convertValue(updateObj, new TypeReference<>() {
-                });
+                filter = mapper.convertValue(filterObj, new TypeReference<>() {});
+                update = mapper.convertValue(updateObj, new TypeReference<>() {});
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().body("Invalid 'filter' or 'update' format: " + e.getMessage());
             }
