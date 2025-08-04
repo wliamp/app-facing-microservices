@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AuthMessage {
+public enum Message {
     INVALID_GOOGLE_TOKEN("Google JWT does not contain required claims or has invalid format"),
     INVALID_FACEBOOK_TOKEN("Invalid Facebook raw"),
     INVALID_OTP_PHONE("Missing phone_number claim in raw"),
@@ -13,5 +13,5 @@ public enum AuthMessage {
     NOT_FOUND_OAUTH("No OAuth Provider matched"),
     NOT_FOUND_OTP("No OTP Provider matched");
 
-    private final String message;
+    private final String msg;
 }

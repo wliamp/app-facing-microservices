@@ -1,6 +1,6 @@
 package vn.chuot96.verify3rdapi.component;
 
-import static vn.chuot96.verify3rdapi.constant.AuthProvider.FIREBASE;
+import static vn.chuot96.verify3rdapi.constant.Provider.FIREBASE;
 
 import org.springframework.stereotype.Component;
 import vn.chuot96.verify3rdapi.dto.UserDTO;

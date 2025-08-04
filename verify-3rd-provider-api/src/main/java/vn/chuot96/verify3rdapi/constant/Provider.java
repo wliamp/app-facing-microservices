@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AuthProvider {
+public enum Provider {
     GOOGLE("google", "https://www.googleapis.com/oauth2/v3/certs"),
     FACEBOOK("facebook", "https://graph.facebook.com/me?fields=id,name,email,picture&access_token="),
     FIREBASE("eyJ", "https://securetoken.google.com/PROJECT_ID");

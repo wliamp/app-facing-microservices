@@ -1,7 +1,9 @@
 package vn.chuot96.verify3rdapi.util;
 
-import static vn.chuot96.verify3rdapi.constant.AuthMessage.*;
-import static vn.chuot96.verify3rdapi.constant.AuthProvider.*;
+import static vn.chuot96.verify3rdapi.constant.Message.INVALID_FACEBOOK_TOKEN;
+import static vn.chuot96.verify3rdapi.constant.Message.INVALID_GOOGLE_TOKEN;
+import static vn.chuot96.verify3rdapi.constant.Provider.FACEBOOK;
+import static vn.chuot96.verify3rdapi.constant.Provider.GOOGLE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +25,7 @@ public class OauthHandler {
             Jwt jwt = decoder.decode(token);
             return new UserDTO(GOOGLE.getKey(), jwt.getSubject());
         } catch (Exception e) {
-            throw new InvalidTokenException(INVALID_GOOGLE_TOKEN.getMessage(), e);
+            throw new InvalidTokenException(INVALID_GOOGLE_TOKEN.getMsg(), e);
         }
     }
 
@@ -35,7 +37,7 @@ public class OauthHandler {
             JsonNode json = mapper.readTree(response);
             return new UserDTO(FACEBOOK.getKey(), json.path("id").asText());
         } catch (Exception e) {
-            throw new InvalidTokenException(INVALID_FACEBOOK_TOKEN.getMessage(), e);
+            throw new InvalidTokenException(INVALID_FACEBOOK_TOKEN.getMsg(), e);
         }
     }
 }

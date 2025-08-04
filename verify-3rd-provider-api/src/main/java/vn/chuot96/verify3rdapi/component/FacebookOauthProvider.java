@@ -1,6 +1,6 @@
 package vn.chuot96.verify3rdapi.component;
 
-import static vn.chuot96.verify3rdapi.constant.AuthProvider.FACEBOOK;
+import static vn.chuot96.verify3rdapi.constant.Provider.FACEBOOK;
 
 import org.springframework.stereotype.Component;
 import vn.chuot96.verify3rdapi.dto.UserDTO;

@@ -3,8 +3,9 @@ package vn.chuot96.verify3rdapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import vn.chuot96.verify3rdapi.component.ExternalFileHelper;
+import vn.chuot96.verify3rdapi.component.ExternalFileReader;
 import vn.chuot96.verify3rdapi.component.ForwardHelper;
+import vn.chuot96.verify3rdapi.dto.RequestDTO;
 import vn.chuot96.verify3rdapi.dto.UserDTO;
 
 @Service
@@ -12,14 +13,14 @@ import vn.chuot96.verify3rdapi.dto.UserDTO;
 public class ForwardService {
     private final ForwardHelper forwardHelper;
 
-    private final ExternalFileHelper externalFileHelper;
+    private final ExternalFileReader externalFileReader;
 
-    public Mono<?> forwardAuthServiceLogin(UserDTO user) {
+    public Mono<?> forwardAuthServiceLogin(RequestDTO request, UserDTO user) {
         return forwardHelper.post(
-                "authentication-service",
+                "authentication-service-" + request.appId(),
                 "/auth/login",
-                externalFileHelper.getString("HeaderName"),
-                externalFileHelper.getString("HeaderValueAuth"),
+                externalFileReader.string("AuthLoginHeaderName"),
+                externalFileReader.string("AuthLoginHeaderValue"),
                 user,
                 UserDTO.class);
     }
@@ -27,9 +28,9 @@ public class ForwardService {
     public Mono<String> forwardJwtIssApiAccessRefresh() {
         return forwardHelper.post(
                 "token-issuer-api",
-                "/issuer/tokens",
-                externalFileHelper.getString("HeaderName"),
-                externalFileHelper.getString("HeaderValueJwtIss"),
+                "/issue/access-refresh",
+                externalFileReader.string("JwtIssARHeaderName"),
+                externalFileReader.string("JwtIssARHeaderValue"),
                 "",
                 String.class);
     }
