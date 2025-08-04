@@ -14,24 +14,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @RequiredArgsConstructor
 public class HeaderValueFilter extends OncePerRequestFilter {
-
     private final HeaderValueAllowed headerValueAllowed;
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-
         String path = request.getRequestURI();
-
-        if (path.startsWith("/issuer/")) {
+        if (path.startsWith("/issue/")) {
             String token = request.getHeader("X-Internal-Token");
             if (token == null || !headerValueAllowed.isAllowed(token)) {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid or missing internal token");
                 return;
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

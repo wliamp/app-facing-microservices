@@ -8,22 +8,19 @@ import vn.chuot96.jwtissapi.dto.ResponseDTO;
 import vn.chuot96.jwtissapi.service.TokenService;
 
 @RestController
-@RequestMapping("/issuer")
+@RequestMapping("/issue")
 @RequiredArgsConstructor
 public class TokenController {
+    private final TokenService tokenservice;
 
-    private final TokenService service;
-
-    @PostMapping("/tokens")
+    @PostMapping("/access-refresh")
     public ResponseEntity<?> issue(@RequestBody RequestDTO request) {
-        return ResponseEntity.ok(new ResponseDTO(service.issueAccess(request), service.issueRefresh(request)));
+        return ResponseEntity.ok(
+                new ResponseDTO(tokenservice.issueAccess(request), tokenservice.issueRefresh(request)));
     }
 
     @PostMapping("/access")
     public ResponseEntity<?> issueAccess(@RequestBody RequestDTO request) {
-        return ResponseEntity.ok(service.issueAccess(request));
+        return ResponseEntity.ok(tokenservice.issueAccess(request));
     }
-
-    // --> more Token type here
-
 }

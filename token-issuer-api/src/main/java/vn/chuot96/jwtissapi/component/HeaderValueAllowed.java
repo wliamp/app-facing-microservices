@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Setter
 @ConfigurationProperties(prefix = "internal.header-allowed")
 public class HeaderValueAllowed {
-
     private List<String> values = new ArrayList<>();
 
     public boolean isAllowed(String token) {

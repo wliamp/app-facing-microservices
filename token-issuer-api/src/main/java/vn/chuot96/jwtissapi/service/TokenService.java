@@ -9,7 +9,6 @@ import vn.chuot96.jwtissapi.dto.RequestDTO;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-
     private final JwtEncoder encoder;
 
     private final TokenCustomize tokenCustomize;
@@ -21,7 +20,4 @@ public class TokenService {
     public String issueRefresh(RequestDTO request) {
         return tokenCustomize.generateRefresh(request);
     }
-
-    // --> more Token type here
-
 }
