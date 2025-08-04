@@ -1,6 +1,6 @@
 package vn.chuot96.verify3rdapi.service;
 
-import static vn.chuot96.verify3rdapi.constant.AuthMessage.NOT_FOUND_OTP;
+import static vn.chuot96.verify3rdapi.constant.Message.NOT_FOUND_OTP;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import vn.chuot96.verify3rdapi.component.OtpProvider;
+import vn.chuot96.verify3rdapi.dto.RequestDTO;
 import vn.chuot96.verify3rdapi.dto.UserDTO;
 import vn.chuot96.verify3rdapi.exception.NoSupportedProviderException;
 
@@ -23,12 +24,12 @@ public class OtpService {
                 .filter(p -> p.supports(token))
                 .findFirst()
                 .map(p -> p.verifyToken(token))
-                .orElseThrow(() -> new NoSupportedProviderException(NOT_FOUND_OTP.getMessage()));
+                .orElseThrow(() -> new NoSupportedProviderException(NOT_FOUND_OTP.getMsg()));
     }
 
-    public Mono<ResponseEntity<?>> forward(String token) {
+    public Mono<ResponseEntity<?>> forward(RequestDTO request) {
         return forwardService
-                .forwardAuthServiceLogin(verifyToken(token))
+                .forwardAuthServiceLogin(request, verifyToken(request.token()))
                 .then(forwardService.forwardJwtIssApiAccessRefresh())
                 .map(ResponseEntity::ok);
     }

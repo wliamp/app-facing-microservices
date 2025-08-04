@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import vn.chuot96.verify3rdapi.dto.RequestDTO;
 import vn.chuot96.verify3rdapi.service.OauthService;
 import vn.chuot96.verify3rdapi.service.OtpService;
 
@@ -12,18 +13,18 @@ import vn.chuot96.verify3rdapi.service.OtpService;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/verify")
-public class AuthController {
-    private final OauthService oauth;
+public class Controller {
+    private final OauthService oauthService;
 
-    private final OtpService otp;
+    private final OtpService otpService;
 
     @PostMapping("/{provider}")
-    public Mono<ResponseEntity<?>> oauth(@PathVariable String provider, @RequestBody String token) {
-        return oauth.forward(provider, token);
+    public Mono<ResponseEntity<?>> oauth(@PathVariable String provider, @RequestBody RequestDTO request) {
+        return oauthService.forward(provider, request);
     }
 
     @PostMapping("/otp")
-    public Mono<ResponseEntity<?>> otp(@RequestBody String token) {
-        return otp.forward(token);
+    public Mono<ResponseEntity<?>> otp(@RequestBody RequestDTO request) {
+        return otpService.forward(request);
     }
 }

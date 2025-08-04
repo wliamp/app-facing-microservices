@@ -1,7 +1,8 @@
 package vn.chuot96.verify3rdapi.util;
 
-import static vn.chuot96.verify3rdapi.constant.AuthMessage.*;
-import static vn.chuot96.verify3rdapi.constant.AuthProvider.*;
+import static vn.chuot96.verify3rdapi.constant.Message.INVALID_OTP_ENDPOINT;
+import static vn.chuot96.verify3rdapi.constant.Message.INVALID_OTP_PHONE;
+import static vn.chuot96.verify3rdapi.constant.Provider.FIREBASE;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -23,11 +24,11 @@ public class OtpHandler {
 
             String phoneNumber = jwt.getClaimAsString("phone_number");
             if (phoneNumber == null) {
-                throw new InvalidTokenException(INVALID_OTP_PHONE.getMessage());
+                throw new InvalidTokenException(INVALID_OTP_PHONE.getMsg());
             }
             return phoneNumber;
         } catch (Exception ex) {
-            throw new InvalidTokenException(INVALID_OTP_ENDPOINT.getMessage(), ex);
+            throw new InvalidTokenException(INVALID_OTP_ENDPOINT.getMsg(), ex);
         }
     }
 }
