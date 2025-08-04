@@ -1,12 +1,3 @@
 package vn.chuot96.dbconnapi.dto;
 
-import lombok.Data;
-
-@Data
-public class DbRequestDTO {
-    private String host;
-    private String port;
-    private String username;
-    private String password;
-    private String database;
-}
+public record DbRequestDTO(String host, String port, String username, String password, String dbName) {}
