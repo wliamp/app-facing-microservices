@@ -1,13 +1,12 @@
 package vn.chuot96.dbconnapi.component;
 
+import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
+import javax.sql.DataSource;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SqlConnectionPool {
