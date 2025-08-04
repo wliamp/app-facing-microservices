@@ -1,16 +1,16 @@
 package vn.chuot96.dbconnapi.component;
 
-import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.sql.DataSource;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
 
 @Component
 public class SqlConnectionPool {
-
     private final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
     public DataSource getDataSource(String driverClass, String jdbcUrl, String username, String password) {
