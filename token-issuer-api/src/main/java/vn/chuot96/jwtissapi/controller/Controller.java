@@ -10,7 +10,7 @@ import vn.chuot96.jwtissapi.service.TokenService;
 @RestController
 @RequestMapping("/issue")
 @RequiredArgsConstructor
-public class TokenController {
+public class Controller {
     private final TokenService tokenservice;
 
     @PostMapping("/access-refresh")

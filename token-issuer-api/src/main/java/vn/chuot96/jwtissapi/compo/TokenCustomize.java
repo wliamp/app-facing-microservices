@@ -1,4 +1,4 @@
-package vn.chuot96.jwtissapi.component;
+package vn.chuot96.jwtissapi.compo;
 
 import static vn.chuot96.jwtissapi.constant.Token.*;
 

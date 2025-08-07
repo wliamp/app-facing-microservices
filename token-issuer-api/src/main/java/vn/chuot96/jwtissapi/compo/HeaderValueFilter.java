@@ -1,4 +1,4 @@
-package vn.chuot96.jwtissapi.component;
+package vn.chuot96.jwtissapi.compo;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,13 +16,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class HeaderValueFilter extends OncePerRequestFilter {
     private final HeaderValueAllowed headerValueAllowed;
 
+    private  final ExternalFileReader externalFileReader;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.startsWith("/issue/")) {
-            String token = request.getHeader("X-Internal-Token");
+            String token = request.getHeader(externalFileReader.string("JwtIssHeaderName"));
             if (token == null || !headerValueAllowed.isAllowed(token)) {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid or missing internal token");
                 return;
