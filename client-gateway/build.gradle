@@ -10,7 +10,7 @@ group = 'vn.chuot96'
 version = '0.0.1-SNAPSHOT'
 
 bootJar {
-    archiveFileName = "client-gateway-api.jar"
+    archiveFileName = "client-gateway.jar"
 }
 
 java {
