@@ -1,4 +1,4 @@
-package vn.chuot96.erksvapi;
+package vn.chuot96.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,8 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @SpringBootApplication
 @EnableEurekaServer
-public class EurekaServerAPI {
-
-	public static void main(String[] args) {
-		SpringApplication.run(EurekaServerAPI.class, args);
-	}
-
+public class EurekaServer {
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServer.class, args);
+    }
 }

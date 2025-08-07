@@ -1,10 +1,10 @@
-package vn.chuot96.erksvapi;
+package vn.chuot96.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaServerAPITests {
+class EurekaServerTests {
 
 	@Test
 	void contextLoads() {
