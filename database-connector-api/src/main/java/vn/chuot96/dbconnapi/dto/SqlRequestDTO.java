@@ -1,11 +1,5 @@
 package vn.chuot96.dbconnapi.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-public class SqlRequestDTO extends RequestDTO {
-    private String query;
-}
-
+public record SqlRequestDTO(DbRequestDTO db, String query, List<Object> params) {}

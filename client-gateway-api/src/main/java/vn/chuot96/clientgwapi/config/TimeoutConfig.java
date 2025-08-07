@@ -1,12 +1,11 @@
 package vn.chuot96.clientgwapi.config;
 
 import io.netty.channel.ChannelOption;
+import java.time.Duration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ReactorResourceFactory;
 import reactor.netty.http.client.HttpClient;
-
-import java.time.Duration;
 
 @Configuration
 public class TimeoutConfig {

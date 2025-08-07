@@ -15,9 +15,7 @@ import vn.chuot96.dbconnapi.service.SqlService;
 @RequiredArgsConstructor
 @RequestMapping("/db")
 public class DbController {
-
     private final SqlService sqlService;
-
     private final MongodbService mongodbService;
 
     @PostMapping("/sql/mysql")
@@ -37,22 +35,22 @@ public class DbController {
 
     // --> more SQL type here
 
-    @PostMapping("/nosql/mongodb/insert")
+    @PostMapping("/mongodb/insert")
     public ResponseEntity<?> mongodbInsert(@RequestBody NosqlRequestDTO request) {
         return mongodbService.insert(request);
     }
 
-    @PostMapping("/nosql/mongodb/find")
+    @PostMapping("/mongodb/find")
     public ResponseEntity<?> mongodbFind(@RequestBody NosqlRequestDTO request) {
         return mongodbService.find(request);
     }
 
-    @PostMapping("/nosql/mongodb/update")
+    @PostMapping("/mongodb/update")
     public ResponseEntity<?> mongodbUpdate(@RequestBody NosqlRequestDTO request) {
         return mongodbService.update(request);
     }
 
-    @PostMapping("/nosql/mongodb/delete")
+    @PostMapping("/mongodb/delete")
     public ResponseEntity<?> mongodbDelete(@RequestBody NosqlRequestDTO request) {
         return mongodbService.delete(request);
     }

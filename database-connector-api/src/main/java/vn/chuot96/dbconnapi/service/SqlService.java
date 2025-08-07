@@ -1,18 +1,16 @@
 package vn.chuot96.dbconnapi.service;
 
+import static vn.chuot96.dbconnapi.constant.SqlJdbcURL.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import vn.chuot96.dbconnapi.dto.SqlRequestDTO;
 import vn.chuot96.dbconnapi.util.SqlHandler;
 
-import static vn.chuot96.dbconnapi.constant.SqlJdbcURL.*;
-import static vn.chuot96.dbconnapi.constant.SqlJdbcURL.MSSQL;
-
 @Service
 @RequiredArgsConstructor
 public class SqlService {
-
     private final SqlHandler handler;
 
     public ResponseEntity<?> mysqlQuery(SqlRequestDTO request) {

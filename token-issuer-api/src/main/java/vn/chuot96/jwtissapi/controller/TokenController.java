@@ -2,30 +2,25 @@ package vn.chuot96.jwtissapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
+import org.springframework.web.bind.annotation.*;
+import vn.chuot96.jwtissapi.dto.RequestDTO;
+import vn.chuot96.jwtissapi.dto.ResponseDTO;
 import vn.chuot96.jwtissapi.service.TokenService;
 
 @RestController
-@RequestMapping("/jwt")
+@RequestMapping("/issue")
 @RequiredArgsConstructor
 public class TokenController {
+    private final TokenService tokenservice;
 
-    private final TokenService service;
+    @PostMapping("/access-refresh")
+    public ResponseEntity<?> issue(@RequestBody RequestDTO request) {
+        return ResponseEntity.ok(
+                new ResponseDTO(tokenservice.issueAccess(request), tokenservice.issueRefresh(request)));
+    }
 
     @PostMapping("/access")
-    public ResponseEntity<String> access(@RequestBody TokenRequestDTO request) {
-        return ResponseEntity.ok(service.generateAccess(request));
+    public ResponseEntity<?> issueAccess(@RequestBody RequestDTO request) {
+        return ResponseEntity.ok(tokenservice.issueAccess(request));
     }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refresh(@RequestBody TokenRequestDTO request) {
-        return ResponseEntity.ok(service.generateRefresh(request));
-    }
-
-    // --> more Token type here
-
 }

@@ -3,28 +3,21 @@ package vn.chuot96.jwtissapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
-import vn.chuot96.jwtissapi.dto.TokenRequestDTO;
-import vn.chuot96.jwtissapi.util.AccessTokenHandler;
-import vn.chuot96.jwtissapi.util.RefreshTokenHandler;
+import vn.chuot96.jwtissapi.component.TokenCustomize;
+import vn.chuot96.jwtissapi.dto.RequestDTO;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-
     private final JwtEncoder encoder;
 
-    private final AccessTokenHandler accessTokenHandler;
+    private final TokenCustomize tokenCustomize;
 
-    private final RefreshTokenHandler refreshTokenHandler;
-
-    public String generateAccess(TokenRequestDTO request) {
-        return accessTokenHandler.generate(encoder, request);
+    public String issueAccess(RequestDTO request) {
+        return tokenCustomize.generateAccess(request);
     }
 
-    public String generateRefresh(TokenRequestDTO request) {
-        return refreshTokenHandler.generate(encoder, request);
+    public String issueRefresh(RequestDTO request) {
+        return tokenCustomize.generateRefresh(request);
     }
-
-    // --> more Token type here
-
 }
