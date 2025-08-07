@@ -3,7 +3,7 @@ package vn.chuot96.jwtissapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import vn.chuot96.jwtissapi.component.HeaderValueAllowed;
+import vn.chuot96.jwtissapi.compo.HeaderValueAllowed;
 
 @SpringBootApplication
 @EnableConfigurationProperties(HeaderValueAllowed.class)
