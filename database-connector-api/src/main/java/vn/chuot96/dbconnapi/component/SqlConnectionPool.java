@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SqlConnectionPool {
-
     private final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
     public DataSource getDataSource(String driverClass, String jdbcUrl, String username, String password) {

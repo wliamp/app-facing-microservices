@@ -22,12 +22,10 @@ java {
 spotless {
     java {
         palantirJavaFormat()
-        trimTrailingWhitespace()
-        endWithNewline()
         target 'src/**/*.java'
     }
     format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
+        target '*.gradle', '*.md', '.gitignore', '*.properties', '*.yml', '*.yaml', '*.xml', '*.json', '*.sh'
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -37,10 +35,6 @@ spotless {
 checkstyle {
     toolVersion = '10.12.3'
     configFile = file("${rootDir}/checkstyle.xml")
-}
-
-tasks.named('check') {
-    dependsOn 'checkstyleMain'
 }
 
 configurations {
@@ -59,6 +53,7 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.mongodb:mongodb-driver-sync:5.5.1'

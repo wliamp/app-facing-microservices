@@ -15,9 +15,7 @@ import vn.chuot96.dbconnapi.service.SqlService;
 @RequiredArgsConstructor
 @RequestMapping("/db")
 public class DbController {
-
     private final SqlService sqlService;
-
     private final MongodbService mongodbService;
 
     @PostMapping("/sql/mysql")

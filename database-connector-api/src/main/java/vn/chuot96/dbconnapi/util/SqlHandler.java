@@ -1,6 +1,6 @@
 package vn.chuot96.dbconnapi.util;
 
-import static vn.chuot96.dbconnapi.constant.SqlConfigParam.*;
+import static vn.chuot96.dbconnapi.constant.SqlConfigParam.DEFAULT_SELECT_LIMIT;
 
 import java.sql.*;
 import java.util.*;
@@ -24,13 +24,13 @@ public class SqlHandler {
                 || jdbcUrl == null
                 || jdbcUrl.isBlank()
                 || request == null
-                || request.getQuery() == null
-                || request.getQuery().isBlank()
-                || request.getUsername() == null
-                || request.getPassword() == null) {
+                || request.query() == null
+                || request.query().isBlank()
+                || request.db().username() == null
+                || request.db().password() == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
         }
-        String rawQuery = request.getQuery().trim();
+        String rawQuery = request.query().trim();
         String loweredQuery = rawQuery.toLowerCase(Locale.ROOT);
         Optional<String> deniedCommand = SqlDeniedCmd.findFirstMatch(loweredQuery);
         if (deniedCommand.isPresent()) {
@@ -44,31 +44,33 @@ public class SqlHandler {
                             deniedCommand.get()));
         }
         try {
-            DataSource dataSource =
-                    sqlConnectionPool.getDataSource(driverClass, jdbcUrl, request.getUsername(), request.getPassword());
+            DataSource dataSource = sqlConnectionPool.getDataSource(
+                    driverClass, jdbcUrl, request.db().username(), request.db().password());
             long start = System.currentTimeMillis();
-            try (Connection conn = dataSource.getConnection();
-                    Statement stmt = conn.createStatement()) {
-                if (isSelectQuery(loweredQuery)) {
-                    String safeQuery = appendLimitIfMissing(rawQuery, loweredQuery);
-                    try (ResultSet rs = stmt.executeQuery(safeQuery)) {
-                        List<Map<String, Object>> result = convert(rs);
+            try (Connection conn = dataSource.getConnection()) {
+                boolean isSelect = isSelectQuery(loweredQuery);
+                String finalQuery = isSelect ? appendLimitIfMissing(rawQuery, loweredQuery) : rawQuery;
+                try (PreparedStatement stmt = conn.prepareStatement(finalQuery)) {
+                    setParameters(stmt, request.params());
+                    if (isSelect) {
+                        try (ResultSet rs = stmt.executeQuery()) {
+                            List<Map<String, Object>> result = convert(rs);
+                            long duration = System.currentTimeMillis() - start;
+                            return ResponseEntity.ok(Map.of(
+                                    "rows", result,
+                                    "count", result.size(),
+                                    "durationMs", duration));
+                        }
+                    } else {
+                        int affectedRows = stmt.executeUpdate();
                         long duration = System.currentTimeMillis() - start;
                         return ResponseEntity.ok(Map.of(
-                                "rows", result,
-                                "count", result.size(),
+                                "affectedRows", affectedRows,
+                                "message", "Operation executed successfully",
                                 "durationMs", duration));
                     }
-                } else {
-                    int affectedRows = stmt.executeUpdate(rawQuery);
-                    long duration = System.currentTimeMillis() - start;
-                    return ResponseEntity.ok(Map.of(
-                            "affectedRows", affectedRows,
-                            "message", "Operation executed successfully",
-                            "durationMs", duration));
                 }
             }
-
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "SQL Error", "details", e.getMessage()));
@@ -89,6 +91,14 @@ public class SqlHandler {
             return rawQuery;
         }
         return rawQuery + " LIMIT " + DEFAULT_SELECT_LIMIT;
+    }
+
+    private void setParameters(PreparedStatement stmt, List<Object> params) throws SQLException {
+        if (params == null) return;
+        for (int i = 0; i < params.size(); i++) {
+            Object param = params.get(i);
+            stmt.setObject(i + 1, param); // JDBC index starts at 1
+        }
     }
 
     private List<Map<String, Object>> convert(ResultSet rs) throws SQLException {
