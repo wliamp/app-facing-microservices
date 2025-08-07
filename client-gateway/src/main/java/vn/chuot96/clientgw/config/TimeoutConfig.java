@@ -1,4 +1,4 @@
-package vn.chuot96.clientgwapi.config;
+package vn.chuot96.clientgw.config;
 
 import io.netty.channel.ChannelOption;
 import java.time.Duration;

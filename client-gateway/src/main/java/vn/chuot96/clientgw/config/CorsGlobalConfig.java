@@ -1,4 +1,4 @@
-package vn.chuot96.clientgwapi.config;
+package vn.chuot96.clientgw.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

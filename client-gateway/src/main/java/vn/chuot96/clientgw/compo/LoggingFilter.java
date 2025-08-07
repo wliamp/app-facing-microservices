@@ -1,4 +1,4 @@
-package vn.chuot96.clientgwapi.compo;
+package vn.chuot96.clientgw.compo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
