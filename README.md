@@ -4,13 +4,15 @@ This repository contains modular Spring Boot API projects designed for learning,
 
 ## 📁 Projects
 
-- [Client Gateway API](./client-gateway-api) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
+- [Authentication Service](./authentication-service) – Stateless service responsible for processing login requests (via social providers) and delegating credential verification to external services.
+  
+- [Client Gateway API](./client-gateway) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
 
-- [Eureka Server API](./eureka-server-api) – the central service registry module responsible for registering and managing all microservices within the distributed system.
+- [Eureka Server API](./eureka-server) – the central service registry module responsible for registering and managing all microservices within the distributed system.
 
-- [Token Issuer API](./token-issuer-api) – Stateless service responsible for issuing, verifying, and refreshing different types of JWT tokens (access, refresh, service).
+- [Third Party Provider Verify API](./third-party-verify) – Handles third-party authentication via OAuth (Google, Facebook) and OTP, forwarding verified identities to the JWT issuer service for token generation.
 
-- [Third Provider Verify API](./verify-3rd-provider-api) – Handles third-party authentication via OAuth (Google, Facebook) and OTP, forwarding verified identities to the JWT issuer service for token generation.
+- [Token Issuer API](./token-issuer) – Stateless service responsible for issuing, verifying, and refreshing different types of JWT tokens (access, refresh, service).
 
 Each module is independently runnable and documented in its own README.md file.
 
