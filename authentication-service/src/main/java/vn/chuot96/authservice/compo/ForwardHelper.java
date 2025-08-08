@@ -11,15 +11,18 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class ForwardHelper {
+    private final ExternalFileReader externalFileReader;
+
     private final WebClient.Builder webBuilder;
 
-    public <T, R> Mono<R> post(String appName, String endpoint, T requestBody, Class<R> responseType) {
+    public <T, R> Mono<R> post(
+            String appName, String endpoint, String headerValue, T requestBody, Class<R> responseType) {
         return webBuilder
                 .baseUrl("http://" + appName)
                 .build()
                 .post()
                 .uri(endpoint)
-                .header("William-K+Devannis@Phan-Hoang-Nam+1996@Dev.vn", "turn+based-i+rpg-2d.authentication@service")
+                .header(externalFileReader.string("InternalHeaderName"), headerValue)
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse

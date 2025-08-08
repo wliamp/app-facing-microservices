@@ -26,12 +26,12 @@ public class AuthService {
                 .flatMap(accId -> Mono.zip(Mono.just(accId), appService.findIdByCode(request.objectCode())))
                 .flatMap(tuple ->
                         accAppService.insertAccApp(tuple.getT1(), tuple.getT2()).thenReturn(tuple.getT1()))
-                .flatMap(accId -> forwardService.forwardJwtIssApi(
+                .flatMap(accId -> forwardService.forwardJwtIss(
                         new UserInfo(request.provider(), request.subject(), "default", List.of("default"))))
                 .map(ResponseEntity::ok);
     }
 
-    public Mono<ResponseEntity<?>> handleRegister(AuthRequest request) {
+    public Mono<ResponseEntity<?>> handleLogin(AuthRequest request) {
         String credential = request.provider() + request.subject();
         Mono<Long> accMono = accService.findIdByCredential(credential);
         Mono<Long> appMono = appService.findIdByCode(request.objectCode());
@@ -50,7 +50,7 @@ public class AuthService {
     public Mono<ResponseEntity<?>> handleLink(AuthRequest request) {
         return accService
                 .updateCredential(request.objectCode(), request.provider() + request.subject())
-                .flatMap(accId -> forwardService.forwardJwtIssApi(new UserInfo(
+                .flatMap(accId -> forwardService.forwardJwtIss(new UserInfo(
                         request.provider(), request.subject(), "default", Collections.singletonList("default"))))
                 .map(ResponseEntity::ok);
     }

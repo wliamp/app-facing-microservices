@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class HeaderValueFilter implements WebFilter {
+    private final ExternalFileReader externalFileReader;
+
     private final HeaderValueAllowed headerValueAllowed;
 
     @Override
@@ -19,7 +21,7 @@ public class HeaderValueFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String path = exchange.getRequest().getPath().toString();
         if (path.startsWith("/auth/")) {
-            String token = exchange.getRequest().getHeaders().getFirst("X-Internal-Token");
+            String token = exchange.getRequest().getHeaders().getFirst(externalFileReader.string("InternalHeaderName"));
             if (token == null || !headerValueAllowed.isAllowed(token)) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();

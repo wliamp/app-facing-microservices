@@ -1,18 +1,25 @@
 package vn.chuot96.authservice.compo;
 
-import java.util.ArrayList;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "internal.header-allowed")
+@RequiredArgsConstructor
 public class HeaderValueAllowed {
-    private List<String> values = new ArrayList<>();
+    private final ExternalFileReader externalFileReader;
+
+    private List<String> values;
+
+    @PostConstruct
+    public void init() {
+        this.values = externalFileReader.list("AuthHeaderValuesAllowed");
+    }
 
     public boolean isAllowed(String token) {
         return values.contains(token);
