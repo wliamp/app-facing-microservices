@@ -6,8 +6,6 @@ This repository contains modular Spring Boot API projects designed for learning,
 
 - [Client Gateway API](./client-gateway-api) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
 
-- [Database Connector API](./database-connector-api) – A dynamic API that connects to various SQL and NoSQL databases at runtime to execute queries securely and flexibly.
-
 - [Eureka Server API](./eureka-server-api) – the central service registry module responsible for registering and managing all microservices within the distributed system.
 
 - [Token Issuer API](./token-issuer-api) – Stateless service responsible for issuing, verifying, and refreshing different types of JWT tokens (access, refresh, service).
