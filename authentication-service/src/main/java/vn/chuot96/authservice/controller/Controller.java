@@ -22,8 +22,8 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<?>> register(@RequestBody AuthRequest request) {
-        return authService.handleRegister(request);
+    public Mono<ResponseEntity<?>> login(@RequestBody AuthRequest request) {
+        return authService.handleLogin(request);
     }
 
     @PostMapping("/link")
