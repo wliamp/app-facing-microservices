@@ -15,6 +15,6 @@ public class GoogleOauthParty implements OauthParty {
 
     @Override
     public User verify(String token) {
-        return OauthHandler.googleProvider(token);
+        return OauthHandler.googleParty(token);
     }
 }

@@ -18,7 +18,7 @@ public class OtpService {
 
     private final List<OtpParty> parties;
 
-    public User verifyToken(String token) {
+    public User verify(String token) {
         return parties.stream()
                 .filter(p -> p.supports(token))
                 .findFirst()
@@ -28,9 +28,9 @@ public class OtpService {
 
     public Mono<ResponseEntity<?>> forward(String token) {
         return forwardService
-                .forwardAuthServiceLogin(verifyToken(token))
+                .forwardAuthServiceLogin(verify(token))
                 .then(forwardService
-                        .forwardJwtIssApiAccessRefresh(verifyToken(token))
+                        .forwardJwtIssApiAccessRefresh(verify(token))
                         .map(ResponseEntity::ok));
     }
 }

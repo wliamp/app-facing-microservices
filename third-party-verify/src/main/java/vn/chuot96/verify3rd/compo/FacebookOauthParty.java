@@ -16,6 +16,6 @@ public class FacebookOauthParty implements OauthParty {
 
     @Override
     public User verify(String token) {
-        return OauthHandler.facebookProvider(token);
+        return OauthHandler.facebookParty(token);
     }
 }

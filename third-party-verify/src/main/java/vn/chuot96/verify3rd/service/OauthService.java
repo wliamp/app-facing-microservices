@@ -18,18 +18,18 @@ public class OauthService {
 
     private final List<OauthParty> parties;
 
-    public User verifyToken(String provider, String token) {
+    public User verify(String party, String token) {
         return parties.stream()
-                .filter(p -> p.getName().equalsIgnoreCase(provider))
+                .filter(p -> p.getName().equalsIgnoreCase(party))
                 .findFirst()
                 .map(p -> p.verify(token))
                 .orElseThrow(() -> new NoSupportedProviderException(NOT_FOUND_OAUTH.getMsg()));
     }
 
-    public Mono<ResponseEntity<?>> forward(String provider, String token) {
+    public Mono<ResponseEntity<?>> forward(String party, String token) {
         return forwardService
-                .forwardAuthServiceLogin(verifyToken(provider, token))
-                .then(forwardService.forwardJwtIssApiAccessRefresh(verifyToken(provider, token)))
+                .forwardAuthServiceLogin(verify(party, token))
+                .then(forwardService.forwardJwtIssApiAccessRefresh(verify(party, token)))
                 .map(ResponseEntity::ok);
     }
 }

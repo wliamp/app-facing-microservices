@@ -15,6 +15,6 @@ public class FirebaseOtpParty implements OtpParty {
 
     @Override
     public User verify(String token) {
-        return new User(FIREBASE.getKey(), OtpHandler.firebaseProvider(token));
+        return new User(FIREBASE.getKey(), OtpHandler.firebaseParty(token));
     }
 }

@@ -17,7 +17,7 @@ import vn.chuot96.verify3rd.exception.InvalidTokenException;
 public class OauthHandler {
     private static final RestTemplate restTemplate = new RestTemplate();
 
-    public static User googleProvider(String token) {
+    public static User googleParty(String token) {
         try {
             JwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(GOOGLE.getUrl()).build();
             Jwt jwt = decoder.decode(token);
@@ -27,7 +27,7 @@ public class OauthHandler {
         }
     }
 
-    public static User facebookProvider(String token) {
+    public static User facebookParty(String token) {
         try {
             String url = FACEBOOK.getUrl() + token;
             String response = restTemplate.getForObject(url, String.class);
