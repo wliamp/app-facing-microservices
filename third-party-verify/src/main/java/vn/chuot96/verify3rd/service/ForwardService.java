@@ -18,7 +18,7 @@ public class ForwardService {
         return forwardHelper.post(
                 "authentication",
                 "/auth/login",
-                externalFileReader.string("Verify3rdAuthLoginHeaderValue"),
+                externalFileReader.getOne("Verify3rdForwardAuthLoginHeaderValue"),
                 user,
                 User.class);
     }
@@ -27,7 +27,7 @@ public class ForwardService {
         return forwardHelper.post(
                 "token-issuer",
                 "/issue/non-refresh",
-                externalFileReader.string("Verify3rdJwtIssARHeaderValue"),
+                externalFileReader.getOne("Verify3rdForwardJwtIssARHeaderValue"),
                 user,
                 User.class);
     }

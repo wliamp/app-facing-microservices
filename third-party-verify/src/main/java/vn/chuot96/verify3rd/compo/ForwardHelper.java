@@ -26,7 +26,7 @@ public class ForwardHelper {
                 .build()
                 .post()
                 .uri(endpoint)
-                .header(externalFileReader.string("InternalHeaderName"), headerValue)
+                .header(externalFileReader.getOne("InternalHeaderName"), headerValue)
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse

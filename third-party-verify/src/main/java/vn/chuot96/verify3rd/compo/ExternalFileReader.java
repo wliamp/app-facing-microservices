@@ -36,13 +36,13 @@ public class ExternalFileReader {
         }
     }
 
-    public String string(String key) {
+    public String getOne(String key) {
         loadFileOnce();
         return data.get(key);
     }
 
-    public List<String> list(String key) {
-        String raw = string(key);
+    public List<String> getMany(String key) {
+        String raw = getOne(key);
         return (raw != null) ? Arrays.stream(raw.split(",")).map(String::trim).toList() : List.of();
     }
 }

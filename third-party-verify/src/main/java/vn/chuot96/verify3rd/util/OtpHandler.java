@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
 import vn.chuot96.verify3rd.exception.InvalidTokenException;
 
 public class OtpHandler {
-    public static String firebaseProvider(String token) {
+    public static String firebaseParty(String token) {
         return decodePhoneNumber(token, FIREBASE.getUrl());
     }
 
