@@ -2,6 +2,7 @@ package vn.chuot96.verify3rd.compo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,28 +12,31 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class ForwardHelper {
+    @Value("${app.code}")
+    private final String appCode;
+
     private final ExternalFileReader externalFileReader;
 
     private final WebClient.Builder webBuilder;
 
     public <T, R> Mono<R> post(
-            String addName, String endpoint, String headerValue, T requestBody, Class<R> responseType) {
+            String appName, String endpoint, String headerValue, T requestBody, Class<R> responseType) {
         return webBuilder
-                .baseUrl("http://" + addName)
+                .baseUrl("http://" + appName + "-" + appCode)
                 .build()
                 .post()
                 .uri(endpoint)
-                .header(externalFileReader.string("Verify3rdHeaderName"), headerValue)
+                .header(externalFileReader.string("InternalHeaderName"), headerValue)
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse
                         .bodyToMono(String.class)
                         .map(errorBody -> {
-                            log.error("HTTP error from http://{}{}: {}", addName, endpoint, errorBody);
+                            log.error("HTTP error from http://{}{}: {}", appName + "-" + appCode, endpoint, errorBody);
                             return new RuntimeException("Downstream error: " + errorBody);
                         }))
                 .bodyToMono(responseType)
                 .doOnError(error ->
-                        log.error("Error during POST to http://{}{}: {}", addName, endpoint, error.getMessage()));
+                        log.error("Error during POST to http://{}{}: {}", appName + "-" + appCode, endpoint, error.getMessage()));
     }
 }
