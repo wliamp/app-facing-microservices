@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import vn.chuot96.verify3rd.dto.RequestDTO;
 import vn.chuot96.verify3rd.service.OauthService;
 import vn.chuot96.verify3rd.service.OtpService;
 
@@ -16,13 +15,13 @@ public class Controller {
 
     private final OtpService otpService;
 
-    @GetMapping("/{provider}")
-    public Mono<ResponseEntity<?>> oauth(@PathVariable String provider, @RequestBody RequestDTO request) {
-        return oauthService.forward(provider, request);
+    @GetMapping("/{party}")
+    public Mono<ResponseEntity<?>> oauth(@PathVariable String party, @RequestBody String token) {
+        return oauthService.forward(party, token);
     }
 
     @PostMapping("/otp")
-    public Mono<ResponseEntity<?>> otp(@RequestBody RequestDTO request) {
-        return otpService.forward(request);
+    public Mono<ResponseEntity<?>> otp(@RequestBody String token) {
+        return otpService.forward(token);
     }
 }

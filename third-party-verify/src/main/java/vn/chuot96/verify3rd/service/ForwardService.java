@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import vn.chuot96.verify3rd.compo.ExternalFileReader;
 import vn.chuot96.verify3rd.compo.ForwardHelper;
-import vn.chuot96.verify3rd.dto.UserDTO;
+import vn.chuot96.verify3rd.dto.User;
 
 @Service
 @RequiredArgsConstructor
@@ -14,21 +14,21 @@ public class ForwardService {
 
     private final ExternalFileReader externalFileReader;
 
-    public Mono<?> forwardAuthServiceLogin(UserDTO user, String appCode) {
+    public Mono<?> forwardAuthServiceLogin(User user) {
         return forwardHelper.post(
-                "authentication-" + appCode.toLowerCase(),
+                "authentication",
                 "/auth/login",
                 externalFileReader.string("Verify3rdAuthLoginHeaderValue"),
                 user,
-                UserDTO.class);
+                User.class);
     }
 
-    public Mono<?> forwardJwtIssApiAccessRefresh(UserDTO user, String appCode) {
+    public Mono<?> forwardJwtIssApiAccessRefresh(User user) {
         return forwardHelper.post(
-                "token-issuer-" + appCode.toLowerCase(),
-                "/issue/access-refresh",
+                "token-issuer",
+                "/issue/non-refresh",
                 externalFileReader.string("Verify3rdJwtIssARHeaderValue"),
                 user,
-                UserDTO.class);
+                User.class);
     }
 }
