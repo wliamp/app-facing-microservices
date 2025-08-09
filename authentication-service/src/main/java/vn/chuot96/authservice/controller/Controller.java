@@ -2,10 +2,7 @@ package vn.chuot96.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.AuthRequest;
 import vn.chuot96.authservice.service.AuthService;
@@ -17,8 +14,8 @@ public class Controller {
     private final AuthService authService;
 
     @PostMapping("/guest")
-    public Mono<ResponseEntity<?>> guest(@RequestBody AuthRequest request) {
-        return authService.handleGuest(request);
+    public Mono<ResponseEntity<?>> guest() {
+        return authService.handleGuest();
     }
 
     @PostMapping("/login")
@@ -31,8 +28,9 @@ public class Controller {
         return authService.handleLink(request);
     }
 
-    @PostMapping("/remove")
-    public Mono<Void> remove(@RequestBody AuthRequest request) {
-        return authService.handleRemove(request);
+    @PostMapping("/logout")
+    public Mono<Void> remove(
+            @RequestBody AuthRequest request, @RequestHeader("Authorization") String authorizationHeader) {
+        return authService.handleLogout(request, authorizationHeader);
     }
 }

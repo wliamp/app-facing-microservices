@@ -1,5 +1,6 @@
 package vn.chuot96.authservice.model;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,6 @@ public class Acc {
     private String code;
     private Boolean status;
     private String credential;
+    private String scope;
+    private List<String> audiences;
 }

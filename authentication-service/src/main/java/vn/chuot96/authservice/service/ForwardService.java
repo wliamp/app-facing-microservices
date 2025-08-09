@@ -24,7 +24,7 @@ public class ForwardService {
                 UserInfo.class);
     }
 
-    public Mono<?> forwardRCache(AuthRequest request) {
+    public Mono<?> forwardRCache(UserInfo request) {
         return forwardHelper.post(
                 "redis-cache",
                 "/cache",
