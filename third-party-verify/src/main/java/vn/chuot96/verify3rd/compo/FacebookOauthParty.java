@@ -1,21 +1,21 @@
 package vn.chuot96.verify3rd.compo;
 
-import org.springframework.stereotype.Component;
-import vn.chuot96.verify3rd.dto.UserDTO;
-import vn.chuot96.verify3rd.util.OauthHandler;
+import static vn.chuot96.verify3rd.constant.Party.FACEBOOK;
 
-import static vn.chuot96.verify3rd.constant.Provider.FACEBOOK;
+import org.springframework.stereotype.Component;
+import vn.chuot96.verify3rd.dto.User;
+import vn.chuot96.verify3rd.util.OauthHandler;
 
 @Component("facebook")
 public class FacebookOauthParty implements OauthParty {
 
     @Override
-    public String getProviderName() {
+    public String getName() {
         return FACEBOOK.getKey();
     }
 
     @Override
-    public UserDTO verifyToken(String token) {
-        return OauthHandler.facebookProvider(token);
+    public User verify(String token) {
+        return OauthHandler.facebookParty(token);
     }
 }

@@ -1,8 +1,7 @@
 package vn.chuot96.jwtiss.compo;
 
-import java.util.List;
-
 import jakarta.annotation.PostConstruct;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,4 +25,3 @@ public class HeaderValueAllowed {
         return values.contains(token);
     }
 }
-

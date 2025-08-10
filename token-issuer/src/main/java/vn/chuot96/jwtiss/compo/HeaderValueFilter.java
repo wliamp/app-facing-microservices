@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class HeaderValueFilter extends OncePerRequestFilter {
     private final HeaderValueAllowed headerValueAllowed;
 
-    private  final ExternalFileReader externalFileReader;
+    private final ExternalFileReader externalFileReader;
 
     @Override
     protected void doFilterInternal(
@@ -24,7 +24,7 @@ public class HeaderValueFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.startsWith("/issue/")) {
-            String token = request.getHeader(externalFileReader.string("JwtIssHeaderName"));
+            String token = request.getHeader(externalFileReader.string("InternalHeaderName"));
             if (token == null || !headerValueAllowed.isAllowed(token)) {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid or missing internal token");
                 return;

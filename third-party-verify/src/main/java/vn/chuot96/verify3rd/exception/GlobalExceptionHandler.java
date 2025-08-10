@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSupportedProviderException.class)
     public ResponseEntity<Object> handleNoSupportedProvider(NoSupportedProviderException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST, "Unsupported provider", ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, "Unsupported party", ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
