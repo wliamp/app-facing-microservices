@@ -11,11 +11,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table("accounts")
-public class Acc { // Account
+@Table("scopes")
+public class Scope {
     @Id
     private Long id;
 
-    private String code;
-    private String cred; // credential
+    private Boolean status; // default or not
+    private String res; // resource
+    private String act; // action
 }

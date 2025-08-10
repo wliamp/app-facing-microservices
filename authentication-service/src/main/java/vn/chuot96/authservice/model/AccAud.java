@@ -10,8 +10,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("account_application")
-public class AccApp {
+@Table("account_audience")
+public class AccAud {
     private Long accId;
-    private Long appId;
+    private Long scopeId;
 }

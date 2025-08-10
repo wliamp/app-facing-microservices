@@ -4,18 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Data
 @Builder
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Table("accounts")
-public class Acc { // Account
-    @Id
-    private Long id;
-
-    private String code;
-    private String cred; // credential
+@AllArgsConstructor
+@Table("account_scope")
+public class AccScope {
+    private Long accId;
+    private Long scopeId;
 }

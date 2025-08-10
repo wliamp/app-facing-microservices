@@ -11,11 +11,11 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table("applications")
-public class App {
+@Table("audiences")
+public class Aud { // Audience
     @Id
     private Long id;
 
+    private Boolean status; // default or not
     private String code;
-    private boolean status;
 }
