@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.AuthRequest;
+import vn.chuot96.authservice.dto.LinkRequest;
 import vn.chuot96.authservice.service.AuthService;
 
 @RestController
@@ -24,8 +25,9 @@ public class Controller {
     }
 
     @PostMapping("/link")
-    public Mono<ResponseEntity<?>> link(@RequestBody AuthRequest request) {
-        return authService.handleLink(request);
+    public Mono<ResponseEntity<?>> link(
+            @RequestBody LinkRequest request, @RequestHeader("Authorization") String authorizationHeader) {
+        return authService.handleLink(request, authorizationHeader);
     }
 
     @PostMapping("/logout")
