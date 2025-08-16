@@ -5,32 +5,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
-import vn.chuot96.authservice.service.AuthService;
+import vn.chuot96.authservice.service.authenticate.LoginService;
+import vn.chuot96.authservice.service.authenticate.LogoutService;
+import vn.chuot96.authservice.service.authenticate.RelogService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class Controller {
-    private final AuthService authService;
+    private final LoginService loginService;
+
+    private final LogoutService logoutService;
+
+    private final RelogService relogService;
 
     @PostMapping("/login/{party}")
     public Mono<ResponseEntity<UserToken>> login(@PathVariable String party, @RequestBody String external) {
-        return authService.loginWithoutBearer(party, external);
+        return loginService.loginWithoutBearer(party, external);
     }
 
-    @PostMapping("/re-login")
-    public Mono<ResponseEntity<UserToken>> reLogin(@RequestHeader("Authorization") String internal) {
-        return authService.loginWithBearer(internal);
+    @PostMapping("/relog")
+    public Mono<ResponseEntity<UserToken>> relog(@RequestHeader("Authorization") String internal) {
+        return relogService.loginWithBearer(internal);
     }
 
     @PostMapping("/link/{party}")
     public Mono<ResponseEntity<UserToken>> link(
             @RequestHeader("Authorization") String internal, @PathVariable String party, @RequestBody String external) {
-        return authService.link(internal, party, external);
+        return loginService.linkAccount(internal, party, external);
     }
 
     @PostMapping("/logout")
     public Mono<Void> logout(@RequestHeader("Authorization") String internal) {
-        return authService.logout(internal);
+        return logoutService.logout(internal);
     }
 }

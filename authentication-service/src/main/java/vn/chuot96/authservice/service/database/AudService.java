@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.service;
+package vn.chuot96.authservice.service.database;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import vn.chuot96.authservice.repo.AudRepo;
 public class AudService {
     private final AudRepo audRepo;
 
-    public Flux<Aud> getAudiencesByAccountId(Long accId){
+    public Flux<Aud> getAudiencesByAccountId(Long accId) {
         return audRepo.findByAccId(accId);
     }
 }

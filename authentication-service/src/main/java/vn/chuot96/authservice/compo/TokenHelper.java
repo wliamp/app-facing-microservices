@@ -34,15 +34,21 @@ public class TokenHelper {
                 .flatMap(valid -> valid ? external.getZalo().getInfo(token) : Mono.empty());
     }
 
+    public Mono<UserToken> issueGuestToken(String sub, Map<String, Object> extraClaims) {
+        Mono<String> accessMono = internal.issue(sub, Type.ACCESS, 3600, extraClaims);
+        Mono<String> refreshMono = internal.issue(sub, Type.REFRESH, 2592000);
+        return Mono.zip(accessMono, refreshMono).map(tuple -> new UserToken(tuple.getT1(), tuple.getT2()));
+    }
+
     public Mono<String> getFacebookId(String token) {
         return getFacebookInfo(token).map(info -> info.get("id").toString());
     }
 
     public Mono<UserToken> issueTokenByFacebook(String token, Map<String, Object> extraClaims) {
         return getFacebookInfo(token).flatMap(info -> {
-            String sub = "facebook" + getFacebookId(token);
-            Mono<String> accessMono = internal.issue(sub, Type.ACCESS, extraClaims);
-            Mono<String> refreshMono = internal.issue(sub, Type.REFRESH);
+            String sub = "facebook:" + getFacebookId(token);
+            Mono<String> accessMono = internal.issue(sub, Type.ACCESS, 3600, extraClaims);
+            Mono<String> refreshMono = internal.issue(sub, Type.REFRESH, 2592000);
             return Mono.zip(accessMono, refreshMono).map(tuple -> new UserToken(tuple.getT1(), tuple.getT2()));
         });
     }

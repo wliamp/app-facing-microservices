@@ -67,7 +67,7 @@ ext {
 }
 
 dependencies {
-    implementation "io.wliamp:starter-token:0.0.5"
+    implementation "io.wliamp:starter-token:0.0.6"
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
