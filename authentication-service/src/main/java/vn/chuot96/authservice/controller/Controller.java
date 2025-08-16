@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import vn.chuot96.authservice.dto.AuthRequest;
-import vn.chuot96.authservice.dto.LinkRequest;
+import vn.chuot96.authservice.dto.UserToken;
 import vn.chuot96.authservice.service.AuthService;
 
 @RestController
@@ -14,25 +13,24 @@ import vn.chuot96.authservice.service.AuthService;
 public class Controller {
     private final AuthService authService;
 
-    @PostMapping("/guest")
-    public Mono<ResponseEntity<?>> guest() {
-        return authService.handleGuest();
+    @PostMapping("/login/{party}")
+    public Mono<ResponseEntity<UserToken>> login(@PathVariable String party, @RequestBody String external) {
+        return authService.loginWithoutBearer(party, external);
     }
 
-    @PostMapping("/login")
-    public Mono<ResponseEntity<?>> login(@RequestBody AuthRequest request) {
-        return authService.handleLogin(request);
+    @PostMapping("/re-login")
+    public Mono<ResponseEntity<UserToken>> reLogin(@RequestHeader("Authorization") String internal) {
+        return authService.loginWithBearer(internal);
     }
 
-    @PostMapping("/link")
-    public Mono<ResponseEntity<?>> link(
-            @RequestBody LinkRequest request, @RequestHeader("Authorization") String authorizationHeader) {
-        return authService.handleLink(request, authorizationHeader);
+    @PostMapping("/link/{party}")
+    public Mono<ResponseEntity<UserToken>> link(
+            @RequestHeader("Authorization") String internal, @PathVariable String party, @RequestBody String external) {
+        return authService.link(internal, party, external);
     }
 
     @PostMapping("/logout")
-    public Mono<Void> remove(
-            @RequestBody AuthRequest request, @RequestHeader("Authorization") String authorizationHeader) {
-        return authService.handleLogout(request, authorizationHeader);
+    public Mono<Void> logout(@RequestHeader("Authorization") String internal) {
+        return authService.logout(internal);
     }
 }

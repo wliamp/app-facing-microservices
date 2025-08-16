@@ -4,12 +4,9 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.model.Aud;
 
 public interface AudRepo extends ReactiveCrudRepository<Aud, Long> {
-    Mono<Aud> findByCode(String code);
-
     @Query("SELECT * FROM audiences WHERE status = true")
     Flux<Aud> findByStatusTrue();
 
@@ -21,5 +18,5 @@ public interface AudRepo extends ReactiveCrudRepository<Aud, Long> {
         JOIN accounts a ON aa.account_id = a.id
         WHERE a.id = :accId
         """)
-    Flux<Aud> findByAccId(@Param("accCred") Long accId);
+    Flux<Aud> findByAccId(@Param("accId") Long accId);
 }
