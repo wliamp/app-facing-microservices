@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.service;
+package vn.chuot96.authservice.service.database;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import vn.chuot96.authservice.util.Generator;
 public class AccService {
     private final AccRepo accRepo;
 
-    public Mono<Acc> getAccountByCred(String cred){
+    public Mono<Acc> getAccountByCred(String cred) {
         return accRepo.findByCred(cred);
     }
 

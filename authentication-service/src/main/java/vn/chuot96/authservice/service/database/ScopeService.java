@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.service;
+package vn.chuot96.authservice.service.database;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import vn.chuot96.authservice.repo.ScopeRepo;
 public class ScopeService {
     private final ScopeRepo scopeRepo;
 
-    public Flux<Scope> getScopesByAccountId(Long accId){
+    public Flux<Scope> getScopesByAccountId(Long accId) {
         return scopeRepo.findByAccId(accId);
     }
 }
