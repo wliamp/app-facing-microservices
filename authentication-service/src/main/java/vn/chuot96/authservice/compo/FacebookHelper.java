@@ -5,26 +5,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
-import vn.chuot96.authservice.util.Generator;
 
 @Component
 @RequiredArgsConstructor
-public class GuestHelper implements PartyHelper {
-    private final TokenHelper tokenHelper;
+public class FacebookHelper implements PartyHelper {
+    private final TokenHelper helper;
 
     @Override
     public String getParty() {
-        return "guest";
+        return "facebook";
     }
 
-    @Override
     public String getSubject(String token) {
-        return Generator.generateCode(8);
+        return helper.getFacebookId(token).toString();
     }
 
     @Override
     public Mono<UserToken> issueToken(String token, Map<String, Object> claims) {
-        String sub = getParty() + ":" + getSubject(token);
-        return tokenHelper.issueGuestToken(sub, claims);
+        return helper.issueTokenByFacebook(token, claims);
     }
 }

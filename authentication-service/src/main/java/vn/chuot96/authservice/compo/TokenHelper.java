@@ -44,12 +44,32 @@ public class TokenHelper {
         return getFacebookInfo(token).map(info -> info.get("id").toString());
     }
 
+    public Mono<String> getGoogleSub(String token) {
+        return getGoogleInfo(token).map(info -> info.get("sub").toString());
+    }
+
+    public Mono<String> getZaloId(String token) {
+        return getZaloInfo(token).map(info -> info.get("id").toString());
+    }
+
     public Mono<UserToken> issueTokenByFacebook(String token, Map<String, Object> extraClaims) {
         return getFacebookInfo(token).flatMap(info -> {
             String sub = "facebook:" + getFacebookId(token);
-            Mono<String> accessMono = internal.issue(sub, Type.ACCESS, 3600, extraClaims);
-            Mono<String> refreshMono = internal.issue(sub, Type.REFRESH, 2592000);
-            return Mono.zip(accessMono, refreshMono).map(tuple -> new UserToken(tuple.getT1(), tuple.getT2()));
+            return issueGuestToken(sub, extraClaims);
+        });
+    }
+
+    public Mono<UserToken> issueTokenByGoogle(String token, Map<String, Object> extraClaims) {
+        return getGoogleInfo(token).flatMap(info -> {
+            String sub = "google:" + getGoogleSub(token);
+            return issueGuestToken(sub, extraClaims);
+        });
+    }
+
+    public Mono<UserToken> issueTokenByZalo(String token, Map<String, Object> extraClaims) {
+        return getZaloInfo(token).flatMap(info -> {
+            String sub = "zalo:" + getZaloId(token);
+            return issueGuestToken(sub, extraClaims);
         });
     }
 }

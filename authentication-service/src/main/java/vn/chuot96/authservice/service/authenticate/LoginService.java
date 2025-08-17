@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.compo.CacheHelper;
 import vn.chuot96.authservice.compo.PartyHelper;
-import vn.chuot96.authservice.compo.TokenHelper;
 import vn.chuot96.authservice.dto.UserToken;
 import vn.chuot96.authservice.model.Acc;
 import vn.chuot96.authservice.service.database.*;
@@ -36,10 +35,8 @@ public class LoginService {
 
     private final Map<String, PartyHelper> loginHelpers;
 
-    @Value("${cache.ttl.minutes}")
-    private long cacheTtlMinutes;
-
-    private final Duration CACHE_TTL_MINUTES = Duration.ofMinutes(15);
+    @Value("${cache.ttl.days}")
+    private Duration CACHE_TTL;
 
     public Mono<ResponseEntity<UserToken>> guestLogin() {
         return loginFlow("guest:" + Generator.generateCode(8), loginHelpers.get("guest"), null);
@@ -106,7 +103,7 @@ public class LoginService {
         return initAccountIfNotExists(cred)
                 .flatMap(this::buildScopeAndAudiencesClaims)
                 .flatMap(claims -> partyHelper.issueToken(token, claims))
-                .flatMap(userToken -> cache.put("auth:" + cred, userToken, CACHE_TTL_MINUTES)
+                .flatMap(userToken -> cache.put("auth:" + cred, userToken, CACHE_TTL)
                         .thenReturn(ResponseEntity.ok(userToken)));
     }
 }
