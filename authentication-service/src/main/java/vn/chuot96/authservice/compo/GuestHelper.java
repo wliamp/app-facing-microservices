@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
 import vn.chuot96.authservice.util.Generator;
 
-@Component
+@Component("guest")
 @RequiredArgsConstructor
 public class GuestHelper implements PartyHelper {
     private final TokenHelper tokenHelper;

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
 
-@Component
+@Component("fb")
 @RequiredArgsConstructor
 public class FacebookHelper implements PartyHelper {
     private final TokenHelper helper;

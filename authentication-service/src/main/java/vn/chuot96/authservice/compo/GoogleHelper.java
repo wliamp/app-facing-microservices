@@ -7,7 +7,7 @@ import vn.chuot96.authservice.dto.UserToken;
 
 import java.util.Map;
 
-@Component
+@Component("gg")
 @RequiredArgsConstructor
 public class GoogleHelper implements PartyHelper {
     private final TokenHelper helper;

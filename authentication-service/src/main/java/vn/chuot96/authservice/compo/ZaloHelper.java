@@ -7,7 +7,7 @@ import vn.chuot96.authservice.dto.UserToken;
 
 import java.util.Map;
 
-@Component
+@Component("zl")
 @RequiredArgsConstructor
 public class ZaloHelper implements PartyHelper {
     private final TokenHelper helper;
