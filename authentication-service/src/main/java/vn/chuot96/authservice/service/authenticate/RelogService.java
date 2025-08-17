@@ -17,10 +17,8 @@ public class RelogService {
 
     private final CacheHelper cache;
 
-    @Value("${cache.ttl.minutes}")
-    private long cacheTtlMinutes;
-
-    private final Duration CACHE_TTL_MINUTES = Duration.ofMinutes(cacheTtlMinutes);
+    @Value("${cache.ttl.days}")
+    private Duration CACHE_TTL;
 
     public Mono<ResponseEntity<UserToken>> loginWithBearer(String bearer) {
         String refreshToken = bearer.replace("Bearer ", "").trim();
@@ -40,7 +38,7 @@ public class RelogService {
                             Mono<String> newRefresh = internal.refresh(refreshToken, 2592000);
                             return Mono.zip(newAccess, newRefresh).flatMap(tuple -> {
                                 UserToken newToken = new UserToken(tuple.getT1(), tuple.getT2());
-                                return cache.put("auth:" + subject, newToken, CACHE_TTL_MINUTES)
+                                return cache.put("auth:" + subject, newToken, CACHE_TTL)
                                         .thenReturn(ResponseEntity.ok(newToken));
                             });
                         });
