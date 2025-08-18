@@ -13,6 +13,13 @@ bootJar {
     archiveFileName = "authentication-service.jar"
 }
 
+bootRun {
+    systemProperty "facebook.app.id", project.findProperty("facebook.app.id")
+    systemProperty "google.client.id", project.findProperty("google.client.id")
+    systemProperty "zalo.app.id", project.findProperty("zalo.app.id")
+    systemProperty "app.code", project.findProperty("app.tbirpg2d.code")
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -44,7 +51,15 @@ configurations {
 }
 
 repositories {
+//    mavenLocal()
     mavenCentral()
+//    maven {
+//        url = uri("https://maven.pkg.github.com/wliamp/spring-boot-starter-microlibrary")
+//        credentials {
+//            username = findProperty("github.publisher.username") ?: ""
+//            password = findProperty("github.publisher.password") ?: ""
+//        }
+//    }
 }
 
 ext {
@@ -52,11 +67,11 @@ ext {
 }
 
 dependencies {
+//    implementation "io.wliamp:starter-token:0.0.6"
+    implementation 'io.github.wliamp:spring-boot-starter-token:0.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
