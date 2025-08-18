@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import vn.chuot96.authservice.compo.CacheHelper;
-import vn.chuot96.authservice.compo.PartyHelper;
-import vn.chuot96.authservice.compo.TokenHelper;
+import vn.chuot96.authservice.compo.handler.CacheHandler;
+import vn.chuot96.authservice.compo.helper.PartyHelper;
+import vn.chuot96.authservice.compo.handler.TokenHandler;
 import vn.chuot96.authservice.dto.UserToken;
 import vn.chuot96.authservice.service.data.*;
 import vn.chuot96.authservice.util.Generator;
@@ -28,11 +28,11 @@ public class AuthenticateService {
 
     private final AccService accService;
 
-    private final CacheHelper cacheHelper;
+    private final CacheHandler cacheHandler;
 
     private final InternalToken internalToken;
 
-    private final TokenHelper tokenHelper;
+    private final TokenHandler tokenHandler;
 
     private final Map<String, PartyHelper> loginHelpers;
 
@@ -45,10 +45,10 @@ public class AuthenticateService {
                 .doOnNext(id -> log.info("AccountId = {}", id))
                 .flatMap(commonService::buildScopeAndAudiencesClaims)
                 .doOnNext(c -> log.info("Claims built for {}", cred))
-                .flatMap(claims -> tokenHelper.issueGuestToken(cred, claims))
+                .flatMap(claims -> tokenHandler.issueGuestToken(cred, claims))
                 .doOnNext(tk -> log.info("Guest token issued for {}", cred))
                 .flatMap(userToken ->
-                        cacheHelper.put("auth:" + cred, userToken, CACHE_TTL)
+                        cacheHandler.put("auth:" + cred, userToken, CACHE_TTL)
                                 .doOnSuccess(v -> log.info("Stored token in Redis for {}", cred))
                                 .thenReturn(ResponseEntity.ok(userToken))
                 );
@@ -80,7 +80,7 @@ public class AuthenticateService {
 
     public Mono<ResponseEntity<UserToken>> linkAccount(String bearer, String party, String token) {
         String refreshToken = bearer.replace("Bearer ", "").trim();
-        return Mono.zip(internalToken.verify(refreshToken), cacheHelper.isTokenBlacklisted(refreshToken))
+        return Mono.zip(internalToken.verify(refreshToken), cacheHandler.isTokenBlacklisted(refreshToken))
                 .flatMap(tuple -> {
                     if (!tuple.getT1() || tuple.getT2()) {
                         return Mono.error(new IllegalArgumentException("Invalid or blacklisted token"));
@@ -101,7 +101,7 @@ public class AuthenticateService {
                                         new IllegalStateException("This party account is already linked")))
                                 .switchIfEmpty(accService
                                         .updateCred(oldCred, newCred)
-                                        .then(cacheHelper.evict("auth:" + oldCred))
+                                        .then(cacheHandler.evict("auth:" + oldCred))
                                         .then(commonService.initAccountIfNotExists(newCred))
                                         .flatMap(commonService::buildScopeAndAudiencesClaims)
                                         .flatMap(claimsNew -> commonService.loginFlow(newCred, partyHelper, token)));
@@ -128,7 +128,7 @@ public class AuthenticateService {
                             return Mono.zip(newAccess, newRefresh).flatMap(tuple -> {
                                 UserToken newToken = new UserToken(tuple.getT1(), tuple.getT2());
                                 return commonService.evictAndBlacklist(subject, oldToken, refreshToken)
-                                        .then(cacheHelper.put("auth:" + subject, newToken, CACHE_TTL))
+                                        .then(cacheHandler.put("auth:" + subject, newToken, CACHE_TTL))
                                         .thenReturn(ResponseEntity.ok(newToken));
                             });
                         });

@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import vn.chuot96.authservice.compo.CacheHelper;
-import vn.chuot96.authservice.compo.PartyHelper;
+import vn.chuot96.authservice.compo.handler.CacheHandler;
+import vn.chuot96.authservice.compo.helper.PartyHelper;
 import vn.chuot96.authservice.dto.UserToken;
 import vn.chuot96.authservice.model.Acc;
 import vn.chuot96.authservice.service.data.*;
@@ -33,9 +33,7 @@ public class CommonService {
 
     private final InternalToken internalToken;
 
-    private final CacheHelper cacheHelper;
-
-    private final CacheService cacheService;
+    private final CacheHandler cacheHandler;
 
     @Value("${cache.ttl.days}")
     private Duration CACHE_TTL;
@@ -68,7 +66,7 @@ public class CommonService {
                 .flatMap(claims -> partyHelper.issueToken(token, claims))
                 .doOnNext(tk -> log.info("Token issued"))
                 .flatMap(userToken ->
-                        cacheHelper.put("auth:" + cred, userToken, CACHE_TTL).thenReturn(ResponseEntity.ok(userToken)));
+                        cacheHandler.put("auth:" + cred, userToken, CACHE_TTL).thenReturn(ResponseEntity.ok(userToken)));
     }
 
     public Mono<Void> evictAndBlacklist(String subject, UserToken oldToken, String refreshToken) {
@@ -80,9 +78,9 @@ public class CommonService {
         long refreshExp = getExp(refreshToken);
         long refreshTTL = Math.max(0, refreshExp - now);
 
-        return cacheHelper.evict("auth:" + subject)
-                .then(cacheHelper.blacklistToken(oldToken.access(), Duration.ofSeconds(accessTTL)))
-                .then(cacheHelper.blacklistToken(refreshToken, Duration.ofSeconds(refreshTTL))).then();
+        return cacheHandler.evict("auth:" + subject)
+                .then(cacheHandler.blacklistToken(oldToken.access(), Duration.ofSeconds(accessTTL)))
+                .then(cacheHandler.blacklistToken(refreshToken, Duration.ofSeconds(refreshTTL))).then();
     }
 
     public long getExp(String token) {

@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.compo;
+package vn.chuot96.authservice.compo.handler;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class CacheHelper {
+public class CacheHandler {
     private final ReactiveRedisTemplate<String, Object> redisTemplate;
 
     /**
