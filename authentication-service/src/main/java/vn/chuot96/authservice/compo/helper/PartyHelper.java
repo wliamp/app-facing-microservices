@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.compo;
+package vn.chuot96.authservice.compo.helper;
 
 import java.util.Map;
 import reactor.core.publisher.Mono;
