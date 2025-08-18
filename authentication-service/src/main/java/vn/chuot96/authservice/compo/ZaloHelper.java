@@ -1,11 +1,10 @@
 package vn.chuot96.authservice.compo;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
-
-import java.util.Map;
 
 @Component("zl")
 @RequiredArgsConstructor
@@ -13,13 +12,8 @@ public class ZaloHelper implements PartyHelper {
     private final TokenHelper helper;
 
     @Override
-    public String getParty() {
-        return "zalo";
-    }
-
-    @Override
-    public String getSubject(String token) {
-        return helper.getZaloId(token).toString();
+    public Mono<String> getSubject(String token) {
+        return helper.getZaloId(token);
     }
 
     @Override

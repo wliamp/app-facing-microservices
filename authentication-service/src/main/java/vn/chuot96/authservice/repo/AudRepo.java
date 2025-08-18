@@ -7,16 +7,20 @@ import reactor.core.publisher.Flux;
 import vn.chuot96.authservice.model.Aud;
 
 public interface AudRepo extends ReactiveCrudRepository<Aud, Long> {
-    @Query("SELECT * FROM audiences WHERE status = true")
+    //    @Query("""
+    //            SELECT *
+    //            FROM audiences
+    //            WHERE status = true
+    //            """)
     Flux<Aud> findByStatusTrue();
 
     @Query(
             """
-        SELECT aud.*
-        FROM audiences aud
-        JOIN account_audience aa ON aud.id = aa.audience_id
-        JOIN accounts a ON aa.account_id = a.id
-        WHERE a.id = :accId
-        """)
+            SELECT aud.*
+            FROM audiences aud
+            JOIN account_audience aa ON aud.id = aa.audience_id
+            JOIN accounts a ON aa.account_id = a.id
+            WHERE a.id = :accId
+            """)
     Flux<Aud> findByAccId(@Param("accId") Long accId);
 }

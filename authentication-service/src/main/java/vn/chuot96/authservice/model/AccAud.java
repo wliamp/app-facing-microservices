@@ -13,5 +13,5 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("account_audience")
 public class AccAud {
     private Long accId;
-    private Long scopeId;
+    private Long audId;
 }
