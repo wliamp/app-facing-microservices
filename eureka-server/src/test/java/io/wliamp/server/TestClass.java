@@ -1,10 +1,10 @@
-package vn.chuot96.server;
+package io.wliamp.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EurekaServerTests {
+class TestClass {
 
 	@Test
 	void contextLoads() {
