@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.service.database;
+package vn.chuot96.authservice.service.data;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class AccAudService {
 
     public Flux<AccAud> addNewAccount(Long accId) {
         return audRepo.findByStatusTrue()
-                .map(aud -> AccAud.builder().accId(accId).scopeId(aud.getId()).build())
+                .map(aud -> AccAud.builder().accId(accId).audId(aud.getId()).build())
                 .collectList()
                 .flatMapMany(auds -> Flux.fromIterable(auds).flatMap(accAudRepo::save));
     }

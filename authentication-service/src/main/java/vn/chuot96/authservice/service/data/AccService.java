@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.service.database;
+package vn.chuot96.authservice.service.data;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

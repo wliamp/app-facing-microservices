@@ -16,19 +16,19 @@ public class TokenHelper {
 
     private final ExternalToken external;
 
-    public Mono<Map<String, Object>> getFacebookInfo(String token) {
+    private Mono<Map<String, Object>> getFacebookInfo(String token) {
         return external.getFacebook()
                 .verify(token)
                 .flatMap(valid -> valid ? external.getFacebook().getInfo(token) : Mono.empty());
     }
 
-    public Mono<Map<String, Object>> getGoogleInfo(String token) {
+    private Mono<Map<String, Object>> getGoogleInfo(String token) {
         return external.getGoogle()
                 .verify(token)
                 .flatMap(valid -> valid ? external.getGoogle().getInfo(token) : Mono.empty());
     }
 
-    public Mono<Map<String, Object>> getZaloInfo(String token) {
+    private Mono<Map<String, Object>> getZaloInfo(String token) {
         return external.getZalo()
                 .verify(token)
                 .flatMap(valid -> valid ? external.getZalo().getInfo(token) : Mono.empty());
@@ -53,23 +53,14 @@ public class TokenHelper {
     }
 
     public Mono<UserToken> issueTokenByFacebook(String token, Map<String, Object> extraClaims) {
-        return getFacebookInfo(token).flatMap(info -> {
-            String sub = "facebook:" + getFacebookId(token);
-            return issueGuestToken(sub, extraClaims);
-        });
+        return getFacebookId(token).map(sub -> "fb:" + sub).flatMap(cred -> issueGuestToken(cred, extraClaims));
     }
 
     public Mono<UserToken> issueTokenByGoogle(String token, Map<String, Object> extraClaims) {
-        return getGoogleInfo(token).flatMap(info -> {
-            String sub = "google:" + getGoogleSub(token);
-            return issueGuestToken(sub, extraClaims);
-        });
+        return getGoogleSub(token).map(sub -> "gg:" + sub).flatMap(cred -> issueGuestToken(cred, extraClaims));
     }
 
     public Mono<UserToken> issueTokenByZalo(String token, Map<String, Object> extraClaims) {
-        return getZaloInfo(token).flatMap(info -> {
-            String sub = "zalo:" + getZaloId(token);
-            return issueGuestToken(sub, extraClaims);
-        });
+        return getZaloId(token).map(sub -> "zl:" + sub).flatMap(cred -> issueGuestToken(cred, extraClaims));
     }
 }

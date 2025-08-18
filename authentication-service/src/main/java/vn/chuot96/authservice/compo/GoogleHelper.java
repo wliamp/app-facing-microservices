@@ -1,11 +1,10 @@
 package vn.chuot96.authservice.compo;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
-
-import java.util.Map;
 
 @Component("gg")
 @RequiredArgsConstructor
@@ -13,13 +12,8 @@ public class GoogleHelper implements PartyHelper {
     private final TokenHelper helper;
 
     @Override
-    public String getParty() {
-        return "google";
-    }
-
-    @Override
-    public String getSubject(String token) {
-        return helper.getGoogleSub(token).toString();
+    public Mono<String> getSubject(String token) {
+        return helper.getGoogleSub(token);
     }
 
     @Override

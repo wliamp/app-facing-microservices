@@ -11,13 +11,8 @@ import vn.chuot96.authservice.dto.UserToken;
 public class FacebookHelper implements PartyHelper {
     private final TokenHelper helper;
 
-    @Override
-    public String getParty() {
-        return "facebook";
-    }
-
-    public String getSubject(String token) {
-        return helper.getFacebookId(token).toString();
+    public Mono<String> getSubject(String token) {
+        return helper.getFacebookId(token);
     }
 
     @Override

@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.model.Acc;
 
 public interface AccRepo extends ReactiveCrudRepository<Acc, Long> {
-    Mono<Acc> findByCred(String credential);
+    Mono<Acc> findByCred(String cred);
 }

@@ -1,42 +1,43 @@
 package vn.chuot96.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.dto.UserToken;
-import vn.chuot96.authservice.service.authenticate.LoginService;
-import vn.chuot96.authservice.service.authenticate.LogoutService;
-import vn.chuot96.authservice.service.authenticate.RelogService;
+import vn.chuot96.authservice.service.authenticate.AuthenticateService;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class Controller {
-    private final LoginService loginService;
+    private final AuthenticateService authenticateService;
 
-    private final LogoutService logoutService;
+    @PostMapping("/guest")
+    public Mono<ResponseEntity<UserToken>> guest() {
+        return authenticateService.guestLogin();
+    }
 
-    private final RelogService relogService;
-
-    @PostMapping("/login/{party}")
+    @PostMapping("/{party}/login")
     public Mono<ResponseEntity<UserToken>> login(@PathVariable String party, @RequestBody String external) {
-        return loginService.loginWithoutBearer(party, external);
+        return authenticateService.loginWithoutBearer(party, external);
     }
 
     @PostMapping("/relog")
     public Mono<ResponseEntity<UserToken>> relog(@RequestHeader("Authorization") String internal) {
-        return relogService.loginWithBearer(internal);
+        return authenticateService.loginWithBearer(internal);
     }
 
-    @PostMapping("/link/{party}")
+    @PostMapping("/{party}/link")
     public Mono<ResponseEntity<UserToken>> link(
             @RequestHeader("Authorization") String internal, @PathVariable String party, @RequestBody String external) {
-        return loginService.linkAccount(internal, party, external);
+        return authenticateService.linkAccount(internal, party, external);
     }
 
     @PostMapping("/logout")
     public Mono<Void> logout(@RequestHeader("Authorization") String internal) {
-        return logoutService.logout(internal);
+        return authenticateService.logout(internal);
     }
 }
