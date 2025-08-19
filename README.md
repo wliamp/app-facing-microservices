@@ -5,10 +5,10 @@ This repository contains modular Spring Boot API projects designed for learning,
 ## 📁 Projects
 
 - [Authentication Service](./authentication-service) – Stateless service responsible for processing login requests (via social providers) and delegating credential verification to external services.
-
-- [Communication Service](./communication-service) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
   
 - [Client Gateway](./client-gateway) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
+
+- [Communication Service](./communication-service) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
 
 - [Eureka Server](./eureka-server) – the central service registry module responsible for registering and managing all microservices within the distributed system.
 
