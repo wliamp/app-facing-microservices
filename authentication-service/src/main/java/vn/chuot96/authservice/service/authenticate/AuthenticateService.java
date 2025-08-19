@@ -1,22 +1,20 @@
 package vn.chuot96.authservice.service.authenticate;
 
 import io.wliamp.token.util.InternalToken;
-
 import java.time.Duration;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.compo.handler.CacheHandler;
-import vn.chuot96.authservice.compo.helper.PartyHelper;
 import vn.chuot96.authservice.compo.handler.TokenHandler;
-import vn.chuot96.authservice.dto.UserToken;
+import vn.chuot96.authservice.compo.helper.PartyHelper;
+import vn.chuot96.authservice.dto.Tokens;
 import vn.chuot96.authservice.service.data.*;
 import vn.chuot96.authservice.util.Generator;
+import vn.chuot96.authservice.util.Parser;
 
 @Service
 @Slf4j
@@ -39,110 +37,113 @@ public class AuthenticateService {
     @Value("${cache.ttl.days}")
     private Duration CACHE_TTL;
 
-    public Mono<ResponseEntity<UserToken>> guestLogin() {
+    public Mono<Tokens> guestLogin() {
         String cred = "guest:" + Generator.generateCode(32);
-        return commonService.initAccountIfNotExists(cred)
-                .doOnNext(id -> log.info("AccountId = {}", id))
+        return commonService
+                .initAccountIfNotExists(cred)
+                .doOnNext(id -> log.info("created GUEST account ID = {}", id))
                 .flatMap(commonService::buildScopeAndAudiencesClaims)
-                .doOnNext(c -> log.info("Claims built for {}", cred))
+                .doOnNext(c -> log.debug("claims(scope, aud) built for {}", cred))
                 .flatMap(claims -> tokenHandler.issueGuestToken(cred, claims))
-                .doOnNext(tk -> log.info("Guest token issued for {}", cred))
-                .flatMap(userToken ->
-                        cacheHandler.put("auth:" + cred, userToken, CACHE_TTL)
-                                .doOnSuccess(v -> log.info("Stored token in Redis for {}", cred))
-                                .thenReturn(ResponseEntity.ok(userToken))
-                );
+                .doOnNext(tk -> log.info("GUEST token issued for {}", Parser.mask(cred)))
+                .flatMap(tokens -> cacheHandler
+                        .put("auth:" + cred, tokens, CACHE_TTL)
+                        .doOnSuccess(v -> log.info("token cached for {}", Parser.mask(cred)))
+                        .thenReturn(tokens));
     }
 
-    public Mono<ResponseEntity<UserToken>> loginWithoutBearer(String party, String token) {
-        PartyHelper partyHelper = loginHelpers.get(party.toLowerCase());
-        if (partyHelper == null) {
-            return Mono.error(new IllegalArgumentException("Unsupported login party: " + party));
-        }
+    public Mono<Tokens> loginWithoutHeader(String party, String token) {
+        PartyHelper partyHelper = loginHelpers.get(party);
         return partyHelper
                 .getSubject(token)
-                .doOnSubscribe(s -> log.info("Subscribed to getSubject"))
-                .doOnNext(sub -> log.info("Got subject (raw) = {}", sub))
+                .switchIfEmpty(
+                        Mono.error(new IllegalArgumentException("Unsupported login party: " + party.toUpperCase())))
+                .doOnSubscribe(s -> log.debug("start login flow for {}", party.toUpperCase()))
+                .doOnNext(sub -> log.debug("extracted subject for {} -> {}", party.toUpperCase(), Parser.mask(sub)))
                 .switchIfEmpty(Mono.defer(() -> {
                     log.warn("getSubject returned empty");
                     return Mono.error(new RuntimeException("Invalid token"));
                 }))
-                .map(sub -> {
-                    String subject = sub != null ? sub : "";
-                    String cred = party.toLowerCase() + ":" + subject;
-                    log.info("Built CRED = {}", cred);
-                    return cred;
-                })
+                .map(sub -> party + ":" + sub)
                 .flatMap(cred -> commonService.loginFlow(cred, partyHelper, token))
-                .doOnNext(resp -> log.info("LOGIN FLOW RESPONSE = {}", resp))
-                .doOnError(err -> log.error("LOGIN ERROR", err));
+                .doOnNext(resp -> log.info(
+                        "login success for {} with tokens(access, refresh) = ({}, {})",
+                        party.toUpperCase(),
+                        Parser.mask(resp.access()),
+                        Parser.mask(resp.refresh())))
+                .doOnError(err -> log.error("login failed for {}", party.toUpperCase(), err));
     }
 
-    public Mono<ResponseEntity<UserToken>> linkAccount(String bearer, String party, String token) {
-        String refreshToken = bearer.replace("Bearer ", "").trim();
-        return Mono.zip(internalToken.verify(refreshToken), cacheHandler.isTokenBlacklisted(refreshToken))
-                .flatMap(tuple -> {
-                    if (!tuple.getT1() || tuple.getT2()) {
-                        return Mono.error(new IllegalArgumentException("Invalid or blacklisted token"));
-                    }
-                    return internalToken.getClaims(refreshToken).flatMap(claims -> {
-                        String oldCred = (String) claims.get("sub");
-                        if (oldCred == null) {
-                            return Mono.error(new IllegalArgumentException("Missing subject in old token"));
-                        }
-                        PartyHelper partyHelper = loginHelpers.get(party.toLowerCase());
-                        if (partyHelper == null) {
-                            return Mono.error(new IllegalArgumentException("Unsupported login party: " + party));
-                        }
-                        String newCred = party.toLowerCase() + ":" + partyHelper.getSubject(token);
-                        return accService
-                                .getAccountByCred(newCred)
-                                .flatMap(existing -> Mono.<ResponseEntity<UserToken>>error(
-                                        new IllegalStateException("This party account is already linked")))
-                                .switchIfEmpty(accService
-                                        .updateCred(oldCred, newCred)
-                                        .then(cacheHandler.evict("auth:" + oldCred))
-                                        .then(commonService.initAccountIfNotExists(newCred))
-                                        .flatMap(commonService::buildScopeAndAudiencesClaims)
-                                        .flatMap(claimsNew -> commonService.loginFlow(newCred, partyHelper, token)));
-                    });
-                });
+    public Mono<Tokens> linkAccount(String party, String oldToken, String newToken) {
+        return Mono.zip(internalToken.verify(oldToken), cacheHandler.isTokenBlacklisted(oldToken))
+                .filter(tuple -> tuple.getT1() && !tuple.getT2())
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Invalid or blacklisted token")))
+                .then(internalToken.getClaims(oldToken))
+                .flatMap(claims -> Mono.justOrEmpty((String) claims.get("sub"))
+                        .doOnNext(oldCred -> log.info("link account start {}", Parser.mask(oldCred)))
+                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Missing subject in old token"))))
+                .flatMap(oldCred -> Mono.justOrEmpty(loginHelpers.get(party))
+                        .switchIfEmpty(Mono.error(
+                                new IllegalArgumentException("Unsupported login party: " + party.toUpperCase())))
+                        .flatMap(partyHelper -> {
+                            String newCred = party + ":" + partyHelper.getSubject(newToken);
+                            log.info("Attempt link from {} to {}", Parser.mask(newCred), Parser.mask(oldCred));
+                            return accService
+                                    .getAccountByCred(newCred)
+                                    .flatMap(existing -> Mono.<Tokens>error(
+                                            new IllegalStateException("This party account is already linked")))
+                                    .switchIfEmpty(accService
+                                            .updateCred(oldCred, newCred)
+                                            .then(cacheHandler.evict("auth:" + oldCred))
+                                            .then(commonService.initAccountIfNotExists(newCred))
+                                            .flatMap(commonService::buildScopeAndAudiencesClaims)
+                                            .flatMap(claimsNew ->
+                                                    commonService.loginFlow(newCred, partyHelper, newToken)));
+                        }));
     }
 
-    public Mono<ResponseEntity<UserToken>> loginWithBearer(String bearer) {
-        String refreshToken = bearer.replace("Bearer ", "").trim();
-        return internalToken.verify(refreshToken).flatMap(valid -> {
-            if (!valid) {
-                return Mono.error(new IllegalArgumentException("Invalid refresh token"));
-            }
-            return internalToken.getClaims(refreshToken).flatMap(claims -> {
-                String subject = (String) claims.get("sub");
-                if (subject == null) {
-                    return Mono.error(new IllegalArgumentException("Missing subject in refresh token"));
-                }
-                return cacheService.loadUserToken("auth:" + subject)
-                        .switchIfEmpty(Mono.error(new IllegalStateException("Session expired, please login again")))
-                        .flatMap(oldToken -> {
-                            Mono<String> newAccess = internalToken.refresh(oldToken.access(), 3600);
-                            Mono<String> newRefresh = internalToken.refresh(refreshToken, 2592000);
-                            return Mono.zip(newAccess, newRefresh).flatMap(tuple -> {
-                                UserToken newToken = new UserToken(tuple.getT1(), tuple.getT2());
-                                return commonService.evictAndBlacklist(subject, oldToken, refreshToken)
-                                        .then(cacheHandler.put("auth:" + subject, newToken, CACHE_TTL))
-                                        .thenReturn(ResponseEntity.ok(newToken));
-                            });
-                        });
-            });
+    public Mono<Tokens> loginWithHeader(String token) {
+        return internalToken
+                .verify(token)
+                .filter(Boolean::booleanValue)
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.warn("refresh token verification failed (invalid)");
+                    return Mono.error(new IllegalArgumentException("Invalid refresh token"));
+                }))
+                .flatMap(v -> cacheHandler
+                        .isTokenBlacklisted(token)
+                        .filter(isBlacklisted -> !isBlacklisted)
+                        .switchIfEmpty(Mono.defer(() -> {
+                            log.warn("refresh token is blacklisted");
+                            return Mono.error(new IllegalStateException("Token revoked or blacklisted"));
+                        }))
+                        .then(internalToken.getClaims(token))
+                        .flatMap(claims -> Mono.justOrEmpty((String) claims.get("sub"))
+                                .switchIfEmpty(
+                                        Mono.error(new IllegalArgumentException("Missing subject in refresh token"))))
+                        .flatMap(subject -> cacheService
+                                .loadUserToken("auth:" + subject)
+                                .switchIfEmpty(Mono.defer(() -> {
+                                    log.warn("Session expired for {}", subject);
+                                    return Mono.error(new IllegalStateException("Session expired, login required"));
+                                }))
+                                .flatMap(oldToken -> Mono.zip(
+                                                internalToken.refresh(oldToken.access(), 3600),
+                                                internalToken.refresh(token, 2592000))
+                                        .flatMap(tuple -> {
+                                            Tokens newTokens = new Tokens(tuple.getT1(), tuple.getT2());
+                                            log.info("refreshed tokens for {}", Parser.mask(subject));
+                                            return commonService
+                                                    .evictAndBlacklist(subject, oldToken, token)
+                                                    .then(cacheHandler.put("auth:" + subject, newTokens, CACHE_TTL))
+                                                    .thenReturn(newTokens);
+                                        }))));
+    }
+
+    public Mono<Void> logout(String token) {
+        return internalToken.getClaims(token).flatMap(claims -> {
+            log.info("logout requested for {}", Parser.mask(claims.get("sub")));
+            return commonService.evictAndBlacklist(claims.get("sub").toString(), new Tokens(token, token), token);
         });
-    }
-
-    public Mono<Void> logout(String bearerToken) {
-        String token = bearerToken.replace("Bearer ", "").trim();
-        return internalToken.getClaims(token)
-                .flatMap(claims -> {
-                    String subject = claims.get("sub").toString();
-                    UserToken dummyToken = new UserToken(token, token);
-                    return commonService.evictAndBlacklist(subject, dummyToken, token);
-                });
     }
 }

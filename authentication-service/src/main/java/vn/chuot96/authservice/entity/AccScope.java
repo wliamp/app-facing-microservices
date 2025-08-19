@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.model;
+package vn.chuot96.authservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("account_audience")
-public class AccAud {
-    private Long accId;
-    private Long audId;
+@Table("account_scope")
+public class AccScope {
+    private Long accId; // account ID
+    private Long scopeId;
 }

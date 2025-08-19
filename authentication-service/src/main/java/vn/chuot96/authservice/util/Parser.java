@@ -2,8 +2,8 @@ package vn.chuot96.authservice.util;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import vn.chuot96.authservice.model.Aud;
-import vn.chuot96.authservice.model.Scope;
+import vn.chuot96.authservice.entity.Aud;
+import vn.chuot96.authservice.entity.Scope;
 
 public class Parser {
     public static String parseScope(List<Scope> scopes) {
@@ -14,5 +14,12 @@ public class Parser {
 
     public static List<String> parseAudience(List<Aud> auds) {
         return auds.stream().map(Aud::getCode).toList();
+    }
+
+    public static String mask(Object value) {
+        if (value == null) return "NULL";
+        String s = value.toString();
+        if (s.length() <= 8) return "****";
+        return s.substring(0, 4) + "..." + s.substring(s.length() - 4);
     }
 }

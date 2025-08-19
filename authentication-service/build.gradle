@@ -21,7 +21,7 @@ java {
 
 spotless {
     java {
-        palantirJavaFormat()
+        palantirJavaFormat('2.73.0')
         target 'src/**/*.java'
     }
     format 'misc', {
@@ -44,7 +44,7 @@ configurations {
 }
 
 repositories {
-//    mavenLocal()
+    mavenLocal()
     mavenCentral()
 //    maven {
 //        url = uri("https://maven.pkg.github.com/wliamp/spring-boot-starter-microlibrary")

@@ -4,7 +4,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
-import vn.chuot96.authservice.model.Aud;
+import vn.chuot96.authservice.entity.Aud;
 
 public interface AudRepo extends ReactiveCrudRepository<Aud, Long> {
     //    @Query("""

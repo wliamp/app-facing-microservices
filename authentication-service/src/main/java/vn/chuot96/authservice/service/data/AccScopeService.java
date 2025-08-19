@@ -3,7 +3,7 @@ package vn.chuot96.authservice.service.data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import vn.chuot96.authservice.model.AccScope;
+import vn.chuot96.authservice.entity.AccScope;
 import vn.chuot96.authservice.repo.AccScopeRepo;
 import vn.chuot96.authservice.repo.ScopeRepo;
 

@@ -2,10 +2,10 @@ package vn.chuot96.authservice.compo.helper;
 
 import java.util.Map;
 import reactor.core.publisher.Mono;
-import vn.chuot96.authservice.dto.UserToken;
+import vn.chuot96.authservice.dto.Tokens;
 
 public interface PartyHelper {
     Mono<String> getSubject(String token);
 
-    Mono<UserToken> issueToken(String token, Map<String, Object> claims);
+    Mono<Tokens> issueToken(String token, Map<String, Object> claims);
 }
