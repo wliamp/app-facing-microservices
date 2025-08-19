@@ -1,4 +1,4 @@
-package vn.chuot96.authservice.model;
+package vn.chuot96.authservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

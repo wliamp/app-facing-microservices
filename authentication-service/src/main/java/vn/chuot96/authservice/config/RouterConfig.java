@@ -17,17 +17,13 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> authRoutes() {
-        return route()
-                .nest(path("/auth"), () -> route()
-                        .POST("/guest", routeHandler::guest)
-                        .nest(path("/{party}"), () -> route()
-                                        .POST("/login", routeHandler::login)
-                                        .POST("/link", routeHandler::link)
-                                        .build()
-                        )
+        return route().nest(path("/auth"), () -> route().POST("/guest", routeHandler::guest)
+                        .nest(path("/{party}"), () -> route().POST("/login", routeHandler::login)
+                                .POST("/link", routeHandler::link)
+                                .build())
                         .POST("/relog", routeHandler::relog)
                         .POST("/logout", routeHandler::logout)
-                        .build()
-                ).build();
+                        .build())
+                .build();
     }
 }

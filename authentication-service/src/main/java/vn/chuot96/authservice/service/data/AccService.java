@@ -3,7 +3,7 @@ package vn.chuot96.authservice.service.data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import vn.chuot96.authservice.model.Acc;
+import vn.chuot96.authservice.entity.Acc;
 import vn.chuot96.authservice.repo.AccRepo;
 import vn.chuot96.authservice.util.Generator;
 

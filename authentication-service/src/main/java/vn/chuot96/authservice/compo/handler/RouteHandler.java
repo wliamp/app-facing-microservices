@@ -12,42 +12,41 @@ import vn.chuot96.authservice.service.authenticate.AuthenticateService;
 public class RouteHandler {
     private final AuthenticateService authenticateService;
 
+    private final ResponseHandler responseHandler;
+
     public Mono<ServerResponse> guest(ServerRequest request) {
-        return authenticateService.guestLogin()
-                .flatMap(token -> ServerResponse.ok().bodyValue(token));
+        return authenticateService.guestLogin().flatMap(responseHandler::buildTokenResponse);
     }
 
     public Mono<ServerResponse> login(ServerRequest request) {
         String party = request.pathVariable("party");
         return request.bodyToMono(String.class)
-                .flatMap(external -> authenticateService.loginWithoutBearer(party, external))
-                .flatMap(token -> ServerResponse.ok().bodyValue(token));
+                .flatMap(external -> authenticateService.loginWithoutHeader(party, external))
+                .flatMap(responseHandler::buildTokenResponse);
     }
 
     public Mono<ServerResponse> relog(ServerRequest request) {
-        String internal = request.headers().firstHeader("Authorization");
-        if (internal == null) {
+        String token = request.headers().firstHeader("X-Refresh-Token");
+        if (token == null) {
             return ServerResponse.badRequest().build();
         }
-        return authenticateService.loginWithBearer(internal)
-                .flatMap(token -> ServerResponse.ok().bodyValue(token));
+        return authenticateService.loginWithHeader(token).flatMap(responseHandler::buildTokenResponse);
     }
 
     public Mono<ServerResponse> link(ServerRequest request) {
-        String internal = request.headers().firstHeader("Authorization");
+        String oldToken = request.headers().firstHeader("X-Refresh-Token");
         String party = request.pathVariable("party");
         return request.bodyToMono(String.class)
-                .flatMap(external -> {
-                    assert internal != null;
-                    return authenticateService.linkAccount(internal, party, external);
+                .flatMap(newToken -> {
+                    assert oldToken != null;
+                    return authenticateService.linkAccount(party, oldToken, newToken);
                 })
-                .flatMap(token -> ServerResponse.ok().bodyValue(token));
+                .flatMap(responseHandler::buildTokenResponse);
     }
 
     public Mono<ServerResponse> logout(ServerRequest request) {
-        String internal = request.headers().firstHeader("Authorization");
-        assert internal != null;
-        return authenticateService.logout(internal)
-                .then(ServerResponse.ok().build());
+        String token = request.headers().firstHeader("X-Refresh-Token");
+        assert token != null;
+        return authenticateService.logout(token).then(ServerResponse.ok().build());
     }
 }

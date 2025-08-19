@@ -3,17 +3,15 @@ package vn.chuot96.authservice.service.authenticate;
 import io.wliamp.token.util.InternalToken;
 import java.time.Duration;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import vn.chuot96.authservice.compo.handler.CacheHandler;
 import vn.chuot96.authservice.compo.helper.PartyHelper;
-import vn.chuot96.authservice.dto.UserToken;
-import vn.chuot96.authservice.model.Acc;
+import vn.chuot96.authservice.dto.Tokens;
+import vn.chuot96.authservice.entity.Acc;
 import vn.chuot96.authservice.service.data.*;
 import vn.chuot96.authservice.util.Builder;
 
@@ -58,7 +56,7 @@ public class CommonService {
                 .map(t -> Builder.buildTokenExtraClaims(t.getT1(), t.getT2()));
     }
 
-    public Mono<ResponseEntity<UserToken>> loginFlow(String cred, PartyHelper partyHelper, String token) {
+    public Mono<Tokens> loginFlow(String cred, PartyHelper partyHelper, String token) {
         return initAccountIfNotExists(cred)
                 .doOnNext(id -> log.info("AccountId = {}", id))
                 .flatMap(this::buildScopeAndAudiencesClaims)
@@ -66,24 +64,23 @@ public class CommonService {
                 .flatMap(claims -> partyHelper.issueToken(token, claims))
                 .doOnNext(tk -> log.info("Token issued"))
                 .flatMap(userToken ->
-                        cacheHandler.put("auth:" + cred, userToken, CACHE_TTL).thenReturn(ResponseEntity.ok(userToken)));
+                        cacheHandler.put("auth:" + cred, userToken, CACHE_TTL).thenReturn(userToken));
     }
 
-    public Mono<Void> evictAndBlacklist(String subject, UserToken oldToken, String refreshToken) {
+    public Mono<Void> evictAndBlacklist(String subject, Tokens oldToken, String refreshToken) {
         long now = System.currentTimeMillis() / 1000;
-
-        long accessExp = getExp(oldToken.access());
+        long accessExp = getExpClaim(oldToken.access());
         long accessTTL = Math.max(0, accessExp - now);
-
-        long refreshExp = getExp(refreshToken);
+        long refreshExp = getExpClaim(refreshToken);
         long refreshTTL = Math.max(0, refreshExp - now);
-
-        return cacheHandler.evict("auth:" + subject)
+        return cacheHandler
+                .evict("auth:" + subject)
                 .then(cacheHandler.blacklistToken(oldToken.access(), Duration.ofSeconds(accessTTL)))
-                .then(cacheHandler.blacklistToken(refreshToken, Duration.ofSeconds(refreshTTL))).then();
+                .then(cacheHandler.blacklistToken(refreshToken, Duration.ofSeconds(refreshTTL)))
+                .then();
     }
 
-    public long getExp(String token) {
+    public long getExpClaim(String token) {
         try {
             Map<String, Object> claims = internalToken.getClaims(token).block();
             assert claims != null;
