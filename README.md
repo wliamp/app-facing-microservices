@@ -1,16 +1,12 @@
-# 🔧 Spring Boot Common Platform Microservice
+# 🔧 Spring Boot Common Microservices
 
-This repository contains modular Spring Boot API projects designed for learning, demonstrations, and backend service architecture.
+Build a Microservices platform with common services for easy integration across multiple applications. Provide a shared foundation for internal projects, allowing extension with additional common services and app-specific services in production.
 
 ## 📁 Projects
 
 - [Authentication Service](./authentication-service) – Stateless service responsible for processing login requests (via social providers) and delegating credential verification to external services.
-  
-- [Client Gateway](./client-gateway) – Acts as a secure gateway for client requests, responsible for routing, authenticating JWT tokens, and forwarding validated requests to internal APIs.
 
 - [Communication Service](./communication-service) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
-
-- [Eureka Server](./eureka-server) – the central service registry module responsible for registering and managing all microservices within the distributed system.
 
 Each module is independently runnable and documented in its own README.md file.
 
