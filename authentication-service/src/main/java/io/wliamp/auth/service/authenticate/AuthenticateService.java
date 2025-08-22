@@ -14,7 +14,6 @@ import io.wliamp.auth.compo.handler.CacheHandler;
 import io.wliamp.auth.compo.handler.TokenHandler;
 import io.wliamp.auth.compo.helper.PartyHelper;
 import io.wliamp.auth.dto.Tokens;
-import vn.chuot96.authservice.service.data.*;
 import io.wliamp.auth.util.Generator;
 import io.wliamp.auth.util.Parser;
 
