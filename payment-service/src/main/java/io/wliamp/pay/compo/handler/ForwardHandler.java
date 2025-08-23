@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,28 +17,22 @@ import java.util.Optional;
 public class ForwardHandler {
     private final WebClient.Builder webBuilder;
 
-    public <T, R> Mono<R> post(
-            String baseUrl, String uri, Map<String, String> headers, T requestBody,  Class<R> responseType) {
-        return webBuilder
-                .baseUrl(baseUrl)
+    public <T> Mono<T> post(String baseUrl, String uri, Map<String, String> headers, Object body, Class<T> responseType) {
+        return webBuilder.baseUrl(baseUrl)
                 .build()
                 .post()
                 .uri(uri)
-                .headers(h -> Optional.ofNullable(headers)
-                        .ifPresent(hdrs -> hdrs.forEach(h::set)))
-                .bodyValue(requestBody)
+                .headers(h -> Optional.ofNullable(headers).ifPresent(hdrs -> hdrs.forEach(h::set)))
+                .bodyValue(body)
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, resp ->
-                        resp.bodyToMono(String.class)
-                                .flatMap(errorBody -> Mono.error(
-                                        new RuntimeException("Downstream error: " + errorBody)
-                                ))
-                )
+                .onStatus(HttpStatusCode::isError, resp -> resp.bodyToMono(String.class)
+                        .flatMap(errorBody -> Mono.error(new RuntimeException("Downstream error: " + errorBody))))
                 .bodyToMono(responseType)
+                .timeout(Duration.ofSeconds(10))
                 .doOnError(error -> log.error("Error during POST to {}{}: {}", baseUrl, uri, error.getMessage()))
                 .onErrorResume(error -> {
                     log.warn("Fallback triggered for POST {}{}", baseUrl, uri);
-                    return Mono.empty(); // fallback
+                    return Mono.empty();
                 });
     }
 }

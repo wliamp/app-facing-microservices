@@ -18,7 +18,7 @@ public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> authRoutes() {
         return route()
-                .route(path("pay"), routeHandler::payment)
+                .route(path("/pay"), routeHandler::payment)
                 .build();
     }
 }
