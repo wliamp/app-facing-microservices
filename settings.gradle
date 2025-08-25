@@ -1,0 +1,3 @@
+rootProject.name = 'common-microservice'
+
+include 'communication-service', 'payment-service'
