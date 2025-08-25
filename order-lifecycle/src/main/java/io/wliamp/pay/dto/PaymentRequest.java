@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record Request(@NotBlank String userId,
-                      @NotNull BigDecimal amount,
-                      @NotBlank String currency) {
+public record PaymentRequest(@NotBlank String userId,
+                             @NotNull BigDecimal amount,
+                             @NotBlank String currency) {
 }

@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,5 +19,4 @@ public class Payment {
     private BigDecimal amount;
     private String currency;
     private TransactionStatus status;
-    private LocalDateTime createdAt;
 }

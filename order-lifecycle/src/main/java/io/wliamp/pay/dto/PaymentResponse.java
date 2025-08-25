@@ -4,5 +4,5 @@ import io.wliamp.pay.constant.TransactionStatus;
 import lombok.Builder;
 
 @Builder
-public record Response(String transactionId, TransactionStatus status, String message) {
+public record PaymentResponse(String transactionId, TransactionStatus status, String message) {
 }
