@@ -1,3 +1,8 @@
-rootProject.name = 'common-microservice'
+rootProject.name = 'common'
 
-include 'communication-service', 'payment-service'
+include 'cmc',
+    'odr'
+
+project(':cmc').projectDir = file('communication')
+
+project(':odr').projectDir = file('order-lifecycle')
