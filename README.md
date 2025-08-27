@@ -2,11 +2,11 @@
 
 Build a Microservices platform with common services for easy integration across multiple applications. Provide a shared foundation for internal projects, allowing extension with additional common services and app-specific services in production.
 
-## 📁 Projects
+## 📁 Modules
 
-- [Authentication Service](./authentication-service) – Stateless service responsible for processing login requests (via social providers) and delegating credential verification to external services.
+- [Communication](./communication) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
 
-- [Communication Service](./communication-service) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
+- [Order Lifecycle](./order-lifecycle) – Manages the full lifecycle of orders, including creation, validation, status tracking, updates, and completion. Ensures consistency across inventory, billing, and notifications while supporting asynchronous processing and event-driven triggers.
 
 Each module is independently runnable and documented in its own README.md file.
 
@@ -19,14 +19,6 @@ If you’d like to contribute or share your code, **do not commit directly to 'm
 Please create a new branch using the allowed proper prefixes: **feature/** , **bugfix/** , **hotfix/** , **dev/** , **release/**
 
 #### ⚠️ If you don’t use a proper prefix, your branch might not be protected and could be modified by others
-
-#### 💡 Before committing:
-Make sure to run **spotlessApply** to auto-format your code using **palantirJavaFormat()** and avoid unnecessary formatting conflicts
-
-You can run it with:
-```bash
-./gradlew spotlessApply
-```
 
 Then open a Pull Request (PR) to merge into 'main'
 
