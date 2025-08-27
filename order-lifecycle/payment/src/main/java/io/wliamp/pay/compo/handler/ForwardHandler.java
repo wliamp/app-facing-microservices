@@ -17,8 +17,8 @@ import java.util.Optional;
 public class ForwardHandler {
     private final WebClient.Builder webBuilder;
 
-    public <T> Mono<T> post(String baseUrl, String uri, Map<String, String> headers, Object body, Class<T> responseType) {
-        return webBuilder.baseUrl(baseUrl)
+    public <T> Mono<T> post(String uri, Map<String, String> headers, Object body, Class<T> responseType) {
+        return webBuilder
                 .build()
                 .post()
                 .uri(uri)
@@ -29,9 +29,9 @@ public class ForwardHandler {
                         .flatMap(errorBody -> Mono.error(new RuntimeException("Downstream error: " + errorBody))))
                 .bodyToMono(responseType)
                 .timeout(Duration.ofSeconds(10))
-                .doOnError(error -> log.error("Error during POST to {}{}: {}", baseUrl, uri, error.getMessage()))
+                .doOnError(error -> log.error("Error during POST to {}: {}", uri, error.getMessage()))
                 .onErrorResume(error -> {
-                    log.warn("Fallback triggered for POST {}{}", baseUrl, uri);
+                    log.warn("Fallback triggered for POST {}", uri);
                     return Mono.empty();
                 });
     }

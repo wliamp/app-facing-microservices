@@ -15,8 +15,9 @@ public class Payment {
     @Id
     private Long id;
 
-    private String userId;
+    private String orderId;
+    private String method;
+    private String description;
+    private String ipAddress;
     private BigDecimal amount;
-    private String currency;
-    private TransactionStatus status;
 }

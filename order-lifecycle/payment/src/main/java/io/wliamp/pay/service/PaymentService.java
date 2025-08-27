@@ -1,6 +1,6 @@
 package io.wliamp.pay.service;
 
-import io.wliamp.pay.compo.helper.MethodHelper;
+import io.wliamp.pay.compo.helper.ProviderHelper;
 import io.wliamp.pay.constant.TransactionStatus;
 import io.wliamp.pay.dto.PaymentRequest;
 import io.wliamp.pay.dto.PaymentResponse;
@@ -17,14 +17,14 @@ import java.util.Map;
 public class PaymentService {
     private final PaymentRepo paymentRepo;
 
-    private final Map<String, MethodHelper> methodHelpers;
+    private final Map<String, ProviderHelper> methodHelpers;
 
     public Mono<PaymentResponse> process(String method, PaymentRequest paymentRequest) {
-        MethodHelper helper = methodHelpers.get(method);
+        ProviderHelper helper = methodHelpers.get(method);
         return (helper == null ? Mono.<Payment>error(
                 new IllegalArgumentException("Unsupported payment method: " + method.toUpperCase())) : Mono.just(
                 Payment.builder()
-                        .userId(paymentRequest.userId())
+                        .orderId(paymentRequest.userId())
                         .amount(paymentRequest.amount())
                         .currency(paymentRequest.currency())
                         .status(TransactionStatus.PENDING)
