@@ -1,6 +1,5 @@
 package io.wliamp.pay.entity;
 
-import io.wliamp.pay.constant.TransactionStatus;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -17,7 +16,9 @@ public class Payment {
 
     private String orderId;
     private String method;
+    private String currency;
     private String description;
     private String ipAddress;
     private BigDecimal amount;
+    private String status;
 }

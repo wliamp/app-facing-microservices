@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component("vn-pay")
@@ -34,11 +33,6 @@ public class VnPayProviderHelper implements ProviderHelper {
                     String paymentUrl = respMap.get("paymentUrl");
                     log.info("[TRACE {}] VNPay payment URL generated for {}: {}",
                             MDC.get("traceId"), payment.getId(), paymentUrl);
-                    Map<String, Object> result = new HashMap<>();
-                    result.put("paymentUrl", paymentUrl);
-                    result.put("paymentMethod", payment.getMethod());
-                    result.put("orderId", payment.getId());
-                    result.put("provider", "vn-pay");
                     return Map.of(
                             "paymentUrl", paymentUrl,
                             "paymentMethod", payment.getMethod(),
