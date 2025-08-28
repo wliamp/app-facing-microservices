@@ -1,6 +1,6 @@
 package io.wliamp.pay.compo.helper;
 
-import io.github.wliamp.pro.pay.util.PaymentProvider;
+import io.github.wliamp.pro.pay.PaymentProvider;
 import io.wliamp.pay.entity.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Component("vn-pay")
 @Slf4j
 @RequiredArgsConstructor
-public class VnPayProviderHelper implements ProviderHelper {
+public class VnPayHelper implements IHelper {
     private final PaymentProvider paymentProvider;
 
     @Override

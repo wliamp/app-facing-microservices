@@ -1,6 +1,6 @@
 package io.wliamp.pay.compo.handler;
 
-import io.wliamp.pay.compo.helper.VnPayProviderHelper;
+import io.wliamp.pay.compo.helper.VnPayHelper;
 import io.wliamp.pay.dto.ListenEvent;
 import io.wliamp.pay.dto.SendEvent;
 import io.wliamp.pay.entity.Payment;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class ConsumeHandler {
-    private final VnPayProviderHelper vnPayHelper;
+    private final VnPayHelper vnPayHelper;
     private final KafkaTemplate<String, SendEvent> kafkaTemplate;
     private final PaymentRepo paymentRepo;
 
