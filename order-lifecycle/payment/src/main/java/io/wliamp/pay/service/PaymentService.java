@@ -20,7 +20,7 @@ public class PaymentService {
 
     private final TagRepo tagRepo;
 
-    public Mono<Payment> addNew(String method, String currency, SaleRequest request) {
+    public Mono<Long> addNew(String method, String currency, SaleRequest request) {
         return Mono.zip(
                         orderRepo.findIdByCode(request.orderId()),
                         tagRepo.findIdByCode("PAYMENT_CREATED"),
@@ -39,7 +39,7 @@ public class PaymentService {
                             .currency(currencyId)
                             .status(statusId)
                             .build());
-                });
+                }).map(Payment::getId);
     }
 
     public Mono<Void> setStatus(String code) {

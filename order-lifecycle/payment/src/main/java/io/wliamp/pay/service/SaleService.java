@@ -19,7 +19,7 @@ public class SaleService {
     private final Map<String, ISale> sales;
     private final OrderService orderService;
     private final PaymentService paymentService;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public Mono<Boolean> createSale(String method, String currency, String provider, SaleRequest saleRequest) {
         return Mono.justOrEmpty(sales.get(provider.toLowerCase()))
@@ -37,12 +37,13 @@ public class SaleService {
                     boolean success = paymentUrl != null;
                     if (!success) return Mono.just(false);
                     Mono<Void> orderUpdate = orderService.setStatus("ORDER_PENDING");
-                    Mono<Payment> paymentCreate = paymentService.addNew(method, currency, saleRequest);
+                    Mono<Long> paymentCreate = paymentService.addNew(method, currency, saleRequest);
                     Mono<Void> orderEvent = sendEvent("order.request",
                             "order:" + saleRequest.orderId() + ":ORDER_PENDING");
-                    Mono<Void> paymentEvent = sendEvent("payment.request",
-                            "payment:" + paymentCreate.map(Payment::getId) + ":PAYMENT_CREATED");
-
+                    Mono<Void> paymentEvent = paymentCreate.flatMap(id ->
+                            sendEvent("order.request",
+                                    "payment:" + id + ":PAYMENT_CREATED")
+                    );
                     return Mono.when(orderUpdate, paymentCreate, orderEvent, paymentEvent)
                             .thenReturn(true);
                 })
@@ -54,8 +55,8 @@ public class SaleService {
                 .onErrorResume(error -> Mono.just(false));
     }
 
-    private Mono<Void> sendEvent(String topic, String message) {
-        return Mono.fromFuture(() -> kafkaTemplate.send(topic, message))
+    private Mono<Void> sendEvent(String topic, String data) {
+        return Mono.fromFuture(() -> kafkaTemplate.send(topic, data))
                 .doOnSuccess(result -> log.info("Sent to {} offset={}",
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().offset()))
