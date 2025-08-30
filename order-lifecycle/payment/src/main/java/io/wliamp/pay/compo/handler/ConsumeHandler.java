@@ -1,8 +1,8 @@
 package io.wliamp.pay.compo.handler;
 
-import io.wliamp.pay.compo.helper.VnPayHelper;
-import io.wliamp.pay.dto.ListenEvent;
-import io.wliamp.pay.dto.SendEvent;
+import io.wliamp.pay.compo.helper.VnPaySale;
+import io.wliamp.pay.dto.SaleRequest;
+import io.wliamp.pay.dto.Response;
 import io.wliamp.pay.entity.Payment;
 import io.wliamp.pay.repo.PaymentRepo;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class ConsumeHandler {
-    private final VnPayHelper vnPayHelper;
-    private final KafkaTemplate<String, SendEvent> kafkaTemplate;
+    private final VnPaySale providerHelper;
+    private final KafkaTemplate<String, Response> kafkaTemplate;
     private final PaymentRepo paymentRepo;
 
     @KafkaListener(topics = "order.request", groupId = "payment")
-    public void consume(ListenEvent listen) {
+    public void consume(SaleRequest listen) {
         log.info("Received payment request for order {}", listen.orderId());
         Payment payment = Payment.builder()
                 .orderId(listen.orderId())
@@ -33,13 +33,13 @@ public class ConsumeHandler {
                 .build();
         Payment savedPayment = paymentRepo.save(payment).block();
         assert savedPayment != null;
-        vnPayHelper.execute(savedPayment)
+        providerHelper.vnPaySale(, savedPayment)
                 .subscribe(success -> {
                             savedPayment.setStatus(success ? "SUCCESS" : "FAILED");
                             paymentRepo.save(savedPayment);
                             kafkaTemplate.send("payment.response",
                                     listen.orderId(),
-                                    SendEvent.builder()
+                                    Response.builder()
                                             .orderId(listen.orderId())
                                             .provider("vnPay")
                                             .status(savedPayment.getStatus())
@@ -50,7 +50,7 @@ public class ConsumeHandler {
                             paymentRepo.save(savedPayment);
                             kafkaTemplate.send("payment.response",
                                     listen.orderId(),
-                                    SendEvent.builder()
+                                    Response.builder()
                                             .orderId(listen.orderId())
                                             .status("FAILED")
                                             .errorMessage(error.getMessage())

@@ -1,7 +1,7 @@
 package io.wliamp.pay.repo;
 
 import io.wliamp.pay.entity.Payment;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
-public interface PaymentRepo extends ReactiveCrudRepository<Payment, Long> {
+public interface PaymentRepo extends R2dbcRepository<Payment, Long> {
 }

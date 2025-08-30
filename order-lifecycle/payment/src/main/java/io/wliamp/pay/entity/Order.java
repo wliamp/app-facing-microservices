@@ -5,20 +5,12 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 @Data
 @Builder
-@Table("payments")
-public class Payment {
+@Table("orders")
+public class Order {
     @Id
     private long id;
 
-    private long orderId;
     private long status;
-    private long method;
-    private long currency;
-    private BigDecimal amount;
-    private Map<String, String> metadata;
 }

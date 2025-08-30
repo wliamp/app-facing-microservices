@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.Map;
 
 @Builder
-public record SendEvent(
+public record Response(
         String orderId,
         String provider,
         String status,
