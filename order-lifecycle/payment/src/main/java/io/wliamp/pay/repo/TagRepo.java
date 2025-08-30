@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface TagRepo extends R2dbcRepository<Tag, Long> {
     Mono<Long> findIdByCode(String code);
+    Mono<Long> findIdByName(String name);
 }
