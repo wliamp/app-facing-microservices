@@ -20,7 +20,7 @@ public class RouterConfig {
         return route().nest(path("/pay"), () -> route()
                         .POST("/authorize", routeHandler::authorize)
                         .POST("/capture", routeHandler::capture)
-                        .POST("/sale", routeHandler::sale)
+                        .POST("/sale/{method}/{currency}/{provider}", routeHandler::sale)
                         .POST("/refund", routeHandler::refund)
                         .POST("/cancel", routeHandler::cancel)
                         .build())

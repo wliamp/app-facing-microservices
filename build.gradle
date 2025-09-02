@@ -21,7 +21,7 @@ ext {
 
 allprojects {
     repositories {
-        mavenLocal()
+//        mavenLocal()
         mavenCentral()
     }
 }
