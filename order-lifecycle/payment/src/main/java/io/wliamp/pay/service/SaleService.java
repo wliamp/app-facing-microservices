@@ -2,7 +2,6 @@ package io.wliamp.pay.service;
 
 import io.wliamp.pay.compo.helper.sale.ISale;
 import io.wliamp.pay.dto.SaleRequest;
-import io.wliamp.pay.entity.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

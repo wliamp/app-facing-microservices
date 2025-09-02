@@ -18,18 +18,22 @@ import java.util.Map;
 public class RouteHandler {
     private final SaleService saleService;
 
-    public Mono<ServerResponse> sale(ServerRequest sr) {
-        String provider = sr.pathVariable("provider");
-        return sr.bodyToMono(SaleRequest.class)
-                .flatMap(pr -> saleService.createSale(provider, pr))
+    public Mono<ServerResponse> sale(ServerRequest serverRequest) {
+        String method = serverRequest.pathVariable("method");
+        String currency = serverRequest.pathVariable("currency");
+        String provider = serverRequest.pathVariable("provider");
+        return serverRequest.bodyToMono(SaleRequest.class)
+                .flatMap(s -> saleService.createSale(method, currency, provider, s))
                 .flatMap(success -> ServerResponse.ok()
                         .bodyValue(Map.of(
                                 "success", success,
+                                "method", method,
+                                "currency", currency,
                                 "provider", provider
                         )))
                 .onErrorResume(e -> {
-                    log.error("[TRACE {}] Error in handleSale for provider {}: {}",
-                            MDC.get("traceId"), provider, e.getMessage(), e);
+                    log.error("[TRACE {}] Error in 'createSale[{}, {}, {}]' cause {}",
+                            MDC.get("traceId"), method, currency, provider, e.getMessage(), e);
                     return ServerResponse.status(500)
                             .bodyValue(Map.of("error", e.getMessage()));
                 });
