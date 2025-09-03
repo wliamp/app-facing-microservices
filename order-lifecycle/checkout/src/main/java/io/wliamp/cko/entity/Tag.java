@@ -5,18 +5,12 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
-@Table("orders")
-public class Order {
+@Table("tags")
+public class Tag {
     @Id
     private long id;
 
-    private long status;
     private String code;
-    private String userId;
-    private BigDecimal amount;
-    private String metadata;
 }
