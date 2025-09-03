@@ -1,5 +1,6 @@
 package io.wliamp.cko.service;
 
+import io.wliamp.cko.compo.handler.TokenHandler;
 import io.wliamp.cko.dto.Request;
 import io.wliamp.cko.entity.Order;
 import io.wliamp.cko.repo.OrderRepo;
@@ -18,16 +19,18 @@ public class OrderService {
 
     private final TagRepo tagRepo;
 
-    public Mono<Void> addNew(Request request) {
+    private final TokenHandler tokenHandler;
+
+    public Mono<Order> addNew(String token, Request request) {
         return tagRepo.findIdByCode("ORDER_STATUS_CREATED")
-                .flatMap(id -> orderRepo.save(Order.builder()
-                        .status(id)
+                .zipWith(tokenHandler.getUserId(token))
+                .flatMap(t -> orderRepo.save(Order.builder()
+                        .status(t.getT1())
                         .code(Generator.generateCode(8))
-                        .userId(request.userId())
+                        .userId(t.getT2())
                         .amount(new BigDecimal(request.amount()))
                         .metadata(request.metadata().toString())
                         .build())
-                )
-                .then();
+                );
     }
 }

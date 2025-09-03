@@ -23,10 +23,10 @@ public class ForwardService {
 
     private final TokenHandler tokenHandler;
 
-    public Mono<?> fwPayment(String token, String action, String method, String currency, String provider, Request request) {
+    public Mono<String> fwPaymentSale(String token, String method, String currency, String provider, Request request) {
         return forwardHandler.post(
                 "pay",
-                "/" + action,
+                "/sale",
                 Map.of(headerName, headerValue),
                 Map.of(
                         "userId", tokenHandler.getUserId(token),
@@ -37,7 +37,7 @@ public class ForwardService {
                         "ipAddress", request.ipAddress(),
                         "metadata", request.metadata()
                 ),
-                Map.class
+                String.class
         );
     }
 }

@@ -17,8 +17,13 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> authRoutes() {
-        return route()
-                .route(path("/cko/{action}"), routeHandler::checkout)
+        return route().nest(path("/cko"), () -> route()
+//                        .POST("/authorize", routeHandler::authorize)
+//                        .POST("/capture", routeHandler::capture)
+                        .POST("/sale/{method}/{currency}/{provider}", routeHandler::sale)
+//                        .POST("/refund", routeHandler::refund)
+//                        .POST("/cancel", routeHandler::cancel)
+                        .build())
                 .build();
     }
 }
