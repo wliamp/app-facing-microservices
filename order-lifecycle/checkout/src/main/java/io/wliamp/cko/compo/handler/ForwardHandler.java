@@ -19,7 +19,7 @@ public class ForwardHandler {
 
     public <T> Mono<T> post(String baseUrl, String uri, Map<String, String> headers, Object body, Class<T> responseType) {
         return webBuilder
-                .baseUrl(baseUrl)
+                .baseUrl("http://" + baseUrl)
                 .build()
                 .post()
                 .uri(uri)
