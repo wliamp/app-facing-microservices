@@ -6,6 +6,7 @@ import io.wliamp.cko.dto.Request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -23,16 +24,16 @@ public class ForwardService {
 
     private final TokenHandler tokenHandler;
 
-    public Mono<String> fwPaymentSale(String token, String method, String currency, String provider, Request request) {
+    public Mono<String> fwPayment(String token, String action, MultiValueMap<String, String> params, Request request) {
         return forwardHandler.post(
                 "pay",
-                "/sale",
+                "/" + action,
                 Map.of(headerName, headerValue),
                 Map.of(
                         "userId", tokenHandler.getUserId(token),
-                        "method", method,
-                        "currency", currency,
-                        "provider", provider,
+                        "method", params.get("method"),
+                        "currency", params.get("currency"),
+                        "provider", params.get("provider"),
                         "amount", request.amount(),
                         "ipAddress", request.ipAddress(),
                         "metadata", request.metadata()

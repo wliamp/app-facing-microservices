@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -15,14 +16,14 @@ public class CheckoutService {
 
     private final OrderService orderService;
 
-    public Mono<String> getPaymentUrl(String token, String method,
-                                      String currency, String provider, Request request) {
+    public Mono<String> getPaymentUrl(String token, String action,
+                                      MultiValueMap<String, String> params, Request request) {
         return orderService.addNew(token, request)
                 .doOnSuccess(o -> log.info("'OrderService.addNew()' SUCCESS: Order={}", o))
                 .doOnError(e -> log.error("[TRACE {}] ERROR in 'OrderService.addNew()' CAUSE {}",
                         MDC.get("traceId"), e.getMessage(), e)
                 )
-                .then(forwardService.fwPaymentSale(token, method, currency, provider, request))
+                .then(forwardService.fwPayment(token, action, params, request))
                 .doOnSuccess(purl -> log.info("'ForwardService.fwPaymentSale()' SUCCESS: purl={}", purl))
                 .doOnError(e -> log.error("[TRACE {}] ERROR in 'ForwardService.fwPaymentSale()' CAUSE {}",
                         MDC.get("traceId"), e.getMessage(), e)
