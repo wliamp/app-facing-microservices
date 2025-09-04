@@ -1,13 +1,14 @@
-# 🔧 Spring Boot Common Microservices
+# 🔧 App Facing Microservices
 
-Build a Microservices platform with common services for easy integration across multiple applications. Provide a shared foundation for internal projects, allowing extension with additional common services and app-specific services in production.
+Build a Microservices platform with multi-gradle Spring Boot for easy integration across multiple applications. Provide a shared foundation for internal projects, allowing extension with additional common services and app-specific services in production.
 
 ## 📁 Modules
 
 - [Communication](./communication) – Manages real-time chat, private messaging, and channel subscriptions. Built with WebSocket or Redis pub/sub for scalable delivery.
 
 - [Order Lifecycle](./order-lifecycle) – Manages the full lifecycle of orders, including creation, validation, status tracking, updates, and completion. Ensures consistency across inventory, billing, and notifications while supporting asynchronous processing and event-driven triggers.
-
+  + [Checkout](./checkout) 
+  + [Payment](./payment)
 Each module is independently runnable and documented in its own README.md file.
 
 ---
