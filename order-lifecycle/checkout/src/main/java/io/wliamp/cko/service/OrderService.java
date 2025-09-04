@@ -21,7 +21,7 @@ public class OrderService {
 
     private final TokenHandler tokenHandler;
 
-    public Mono<Order> addNew(String token, Request request) {
+    public Mono<Order> create(String token, Request request) {
         return tagRepo.findIdByCode("ORDER_STATUS_CREATED")
                 .zipWith(tokenHandler.getUserId(token))
                 .flatMap(t -> orderRepo.save(Order.builder()

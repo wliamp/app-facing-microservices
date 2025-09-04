@@ -1,5 +1,6 @@
 package io.wliamp.cko.service;
 
+import io.wliamp.cko.compo.helper.ISale;
 import io.wliamp.cko.dto.Request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,25 +9,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CheckoutService {
-    private final ForwardService forwardService;
-
-    private final OrderService orderService;
+    private final Map<String, ISale> sales;
 
     public Mono<String> getPaymentUrl(String token, String action,
                                       MultiValueMap<String, String> params, Request request) {
-        return orderService.addNew(token, request)
-                .doOnSuccess(o -> log.info("'OrderService.addNew()' SUCCESS: Order={}", o))
-                .doOnError(e -> log.error("[TRACE {}] ERROR in 'OrderService.addNew()' CAUSE {}",
+        String provider = params.getFirst("provider");
+        return Mono.justOrEmpty(sales.get(provider))
+                .doOnSuccess(p -> log.info("[TRACE {}] Found Provider on sales SUCCESS: provider={}",
+                        MDC.get("traceId"), p))
+                .doOnError(e -> log.error("[TRACE {}] Found Provider on sales FAILED CAUSE {}",
                         MDC.get("traceId"), e.getMessage(), e)
                 )
-                .then(forwardService.fwPayment(token, action, params, request))
-                .doOnSuccess(purl -> log.info("'ForwardService.fwPaymentSale()' SUCCESS: purl={}", purl))
-                .doOnError(e -> log.error("[TRACE {}] ERROR in 'ForwardService.fwPaymentSale()' CAUSE {}",
+                .flatMap(sale -> Mono.fromCallable(() -> sale.execute(token, request))
+                .doOnSuccess(purl -> log.info("Execute sale SUCCESS: purl={}", purl)
+                .doOnError(e -> log.error("[TRACE {}] Execute sale FAILED cause {}",
                         MDC.get("traceId"), e.getMessage(), e)
-                );
+                )));
     }
 }
