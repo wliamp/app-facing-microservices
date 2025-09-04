@@ -2,6 +2,7 @@ package io.wliamp.cko.service;
 
 import io.wliamp.cko.compo.helper.ISale;
 import io.wliamp.cko.dto.Request;
+import io.wliamp.cko.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -20,7 +21,8 @@ public class CheckoutService {
     public Mono<String> getPaymentUrl(String token, String action,
                                       MultiValueMap<String, String> params, Request request) {
         String provider = params.getFirst("provider");
-        return Mono.justOrEmpty(sales.get(provider))
+        assert provider != null;
+        return Mono.justOrEmpty(sales.get(Converter.kebabToCamel(provider)))
                 .doOnSuccess(p -> log.info("[TRACE {}] Found Provider on sales SUCCESS: provider={}",
                         MDC.get("traceId"), p))
                 .doOnError(e -> log.error("[TRACE {}] Found Provider on sales FAILED CAUSE {}",
