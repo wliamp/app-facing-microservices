@@ -2,80 +2,139 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
+  # ------------------------
+  # Test CMC
+  # ------------------------
   test-cmc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: wliamp/configurations
+          path: config
+          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: |
-          ./gradlew :cmc:clean test
 
-  build-auth:
+      - name: Run tests for cmc
+        env:
+          SPRING_PROFILES_ACTIVE: native
+          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+        run: ./gradlew :cmc:clean test
+
+  # ------------------------
+  # Build & Push CMC
+  # ------------------------
+  build-cmc:
     runs-on: ubuntu-latest
     needs: test-cmc
     if: success()
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - run: |
-          docker build -t cmc:latest .
-          docker push cmc:latest
 
+      - name: Build & Push cmc image
+        run: |
+          docker build -t wliamp/communication-service:latest ./communication
+          docker push wliamp/communication-service:latest
+
+  # ------------------------
+  # Test ODR/CKO
+  # ------------------------
   test-odr-cko:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: wliamp/configurations
+          path: config
+          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: |
-          ./gradlew :odr:cko:clean test
 
+      - name: Run tests for odr-cko
+        env:
+          SPRING_PROFILES_ACTIVE: native
+          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+        run: ./gradlew :odr:cko:clean test
+
+  # ------------------------
+  # Build & Push ODR/CKO
+  # ------------------------
   build-odr-cko:
     runs-on: ubuntu-latest
     needs: test-odr-cko
     if: success()
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - run: |
-          docker build -t odr:cko:latest .
-          docker push odr:cko:latest
 
+      - name: Build & Push odr-cko image
+        run: |
+          docker build -t wliamp/checkout-service:latest ./order-lifecycle/checkout
+          docker push wliamp/checkout-service:latest
+
+  # ------------------------
+  # Test ODR/PAY
+  # ------------------------
   test-odr-pay:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: wliamp/configurations
+          path: config
+          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: |
-          ./gradlew :odr:pay:clean test
 
+      - name: Run tests for odr-pay
+        env:
+          SPRING_PROFILES_ACTIVE: native
+          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+        run: ./gradlew :odr:pay:clean test
+
+  # ------------------------
+  # Build & Push ODR/PAY
+  # ------------------------
   build-odr-pay:
     runs-on: ubuntu-latest
     needs: test-odr-pay
     if: success()
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - run: |
-          docker build -t odr:pay:latest .
-          docker push odr:pay:latest
+
+      - name: Build & Push odr-pay image
+        run: |
+          docker build -t wliamp/payment-service:latest ./order-lifecycle/payment
+          docker push wliamp/payment-service:latest
