@@ -6,18 +6,53 @@ on:
 
 jobs:
   # ------------------------
-  # Test CMC
+  # Filter changes + setup repo once
   # ------------------------
-  test-cmc:
+  setup:
     runs-on: ubuntu-latest
-    if: github.event.head_commit.changed_files contains 'communication/**'
+    outputs:
+      cmc: ${{ steps.filter.outputs.cmc }}
+      odr-cko: ${{ steps.filter.outputs.odr-cko }}
+      odr-pay: ${{ steps.filter.outputs.odr-pay }}
+      workspace: ${{ steps.workspace.outputs.path }}
     steps:
+      # Checkout main repo
       - uses: actions/checkout@v4
+
+      # Checkout configuration repo once
       - uses: actions/checkout@v4
         with:
           repository: wliamp/configurations
           path: config
           token: ${{ secrets.CONFIG_REPO_TOKEN }}
+
+      # Filter changed paths
+      - name: Filter changed paths
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            cmc:
+              - 'communication/**'
+            odr-cko:
+              - 'order-lifecycle/checkout/**'
+            odr-pay:
+              - 'order-lifecycle/payment/**'
+
+      # Pass current workspace path to outputs
+      - id: workspace
+        run: echo "::set-output name=path::${GITHUB_WORKSPACE}"
+
+  # ------------------------
+  # Test CMC
+  # ------------------------
+  test-cmc:
+    needs: setup
+    if: needs.setup.outputs.cmc == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use checked-out repo
+        run: echo "Workspace already checked out at ${{ github.workspace }}"
 
       - uses: actions/setup-java@v3
         with:
@@ -34,12 +69,10 @@ jobs:
   # Build & Push CMC
   # ------------------------
   build-cmc:
-    runs-on: ubuntu-latest
     needs: test-cmc
     if: success()
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -54,16 +87,12 @@ jobs:
   # Test ODR/CKO
   # ------------------------
   test-odr-cko:
+    needs: setup
+    if: needs.setup.outputs.odr-cko == 'true'
     runs-on: ubuntu-latest
-    if: github.event.head_commit.changed_files contains 'order-lifecycle/checkout/**'
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/checkout@v4
-        with:
-          repository: wliamp/configurations
-          path: config
-          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+      - name: Use checked-out repo
+        run: echo "Workspace already checked out at ${{ github.workspace }}"
 
       - uses: actions/setup-java@v3
         with:
@@ -80,12 +109,10 @@ jobs:
   # Build & Push ODR/CKO
   # ------------------------
   build-odr-cko:
-    runs-on: ubuntu-latest
     needs: test-odr-cko
     if: success()
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -100,16 +127,12 @@ jobs:
   # Test ODR/PAY
   # ------------------------
   test-odr-pay:
+    needs: setup
+    if: needs.setup.outputs.odr-pay == 'true'
     runs-on: ubuntu-latest
-    if: github.event.head_commit.changed_files contains 'order-lifecycle/payment/**'
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/checkout@v4
-        with:
-          repository: wliamp/configurations
-          path: config
-          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+      - name: Use checked-out repo
+        run: echo "Workspace already checked out at ${{ github.workspace }}"
 
       - uses: actions/setup-java@v3
         with:
@@ -126,12 +149,10 @@ jobs:
   # Build & Push ODR/PAY
   # ------------------------
   build-odr-pay:
-    runs-on: ubuntu-latest
     needs: test-odr-pay
     if: success()
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
