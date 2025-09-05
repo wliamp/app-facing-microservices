@@ -1,0 +1,87 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  test-cmc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - run: |
+          cd communication
+          ./gradlew clean test
+
+  build-auth:
+    runs-on: ubuntu-latest
+    needs: test-cmc
+    if: success()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - run: |
+          cd communication
+          docker build -t repo/cmc:latest .
+          docker push repo/cmc:latest
+
+  test-odr-cko:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - run: |
+          cd order-lifecycle/checkout
+          ./gradlew clean test
+
+  build-odr-cko:
+    runs-on: ubuntu-latest
+    needs: test-odr-cko
+    if: success()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - run: |
+          cd order-lifecycle/checkout
+          docker build -t repo/odr:cko:latest .
+          docker push repo/odr:cko:latest
+
+  test-odr-pay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - run: |
+          cd order-lifecycle/payment
+          ./gradlew clean test
+
+  build-odr-pay:
+    runs-on: ubuntu-latest
+    needs: test-odr-pay
+    if: success()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - run: |
+          cd order-lifecycle/payment
+          docker build -t repo/odr:pay:latest .
+          docker push repo/odr:pay:latest
