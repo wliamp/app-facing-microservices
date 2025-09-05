@@ -14,8 +14,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - run: |
-          cd communication
-          ./gradlew clean test
+          ./gradlew :cmc:clean test
 
   build-auth:
     runs-on: ubuntu-latest
@@ -28,9 +27,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - run: |
-          cd communication
-          docker build -t repo/cmc:latest .
-          docker push repo/cmc:latest
+          docker build -t cmc:latest .
+          docker push cmc:latest
 
   test-odr-cko:
     runs-on: ubuntu-latest
@@ -41,8 +39,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - run: |
-          cd order-lifecycle/checkout
-          ./gradlew clean test
+          ./gradlew :odr:cko:clean test
 
   build-odr-cko:
     runs-on: ubuntu-latest
@@ -55,9 +52,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - run: |
-          cd order-lifecycle/checkout
-          docker build -t repo/odr:cko:latest .
-          docker push repo/odr:cko:latest
+          docker build -t odr:cko:latest .
+          docker push odr:cko:latest
 
   test-odr-pay:
     runs-on: ubuntu-latest
@@ -68,8 +64,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - run: |
-          cd order-lifecycle/payment
-          ./gradlew clean test
+          ./gradlew :odr:pay:clean test
 
   build-odr-pay:
     runs-on: ubuntu-latest
@@ -82,6 +77,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - run: |
-          cd order-lifecycle/payment
-          docker build -t repo/odr:pay:latest .
-          docker push repo/odr:pay:latest
+          docker build -t odr:pay:latest .
+          docker push odr:pay:latest
