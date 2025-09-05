@@ -10,6 +10,7 @@ jobs:
   # ------------------------
   test-cmc:
     runs-on: ubuntu-latest
+    if: github.event.head_commit.changed_files contains 'communication/**'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -54,6 +55,7 @@ jobs:
   # ------------------------
   test-odr-cko:
     runs-on: ubuntu-latest
+    if: github.event.head_commit.changed_files contains 'order-lifecycle/checkout/**'
     steps:
       - uses: actions/checkout@v4
 
@@ -99,6 +101,7 @@ jobs:
   # ------------------------
   test-odr-pay:
     runs-on: ubuntu-latest
+    if: github.event.head_commit.changed_files contains 'order-lifecycle/payment/**'
     steps:
       - uses: actions/checkout@v4
 
