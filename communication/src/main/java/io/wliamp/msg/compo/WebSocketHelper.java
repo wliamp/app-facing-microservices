@@ -1,6 +1,7 @@
 package io.wliamp.msg.compo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,55 +48,55 @@ public class WebSocketHelper implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         String channel = extractChannel(session.getHandshakeInfo().getUri()).orElse("global");
         log.debug("WebSocket session {} connected on channel '{}'", session.getId(), channel);
-        Flux<WebSocketMessage> history = cacheService
-                .load(channel)
-                .map(msgSend -> safeJson(mapper, msgSend))
-                .map(session::textMessage)
-                .onErrorResume(e -> {
-                    log.error("Error reading history for channel {}", channel, e);
-                    return Flux.empty();
-                });
-        Flux<WebSocketMessage> broadcast = getSink(channel).asFlux()
-                .map(msgSend -> safeJson(mapper, msgSend))
-                .map(session::textMessage)
-                .onErrorResume(e -> {
-                    log.error("Broadcast error on channel {}", channel, e);
-                    return Flux.empty();
-                });
-        Flux<WebSocketMessage> outgoing = Flux.concat(history, broadcast);
-        Mono<Void> inbound = session.receive()
-                .map(WebSocketMessage::getPayloadAsText)
-                .flatMap(payload -> {
-                    ChatMessage msg;
-                    try {
-                        msg = mapper.readValue(payload, ChatMessage.class);
-                    } catch (JsonProcessingException e) {
-                        log.warn("Invalid payload from session {}: {}", session.getId(), payload);
-                        return Mono.empty();
-                    }
-                    if (msg.channel() == null || msg.channel().isBlank()) {
-                        msg = msg.withChannel(channel);
-                    }
-                    if (msg.content() == null || msg.content().isBlank()) {
-                        return Mono.empty();
-                    }
-                    if (msg.content().length() > maxMessageLength) {
-                        log.warn("Message too long from {}: length={}", msg.sender(), msg.content().length());
-                        return Mono.empty();
-                    }
-                    if (msg.timestamp() == 0) {
-                        msg = msg.withTimestamp(System.currentTimeMillis());
-                    }
-                    getSink(msg.channel()).tryEmitNext(msg);
-                    return cacheService.cache(msg.channel(), msg, historyLimit)
-                            .then(persistenceService.persist(msg))
-                            .then();
-                })
-                .doOnError(e -> log.error("Error in inbound stream", e))
-                .then();
-        return session.send(outgoing)
-                .and(inbound)
+
+        return session
+                .send(Flux.concat(
+                                cacheService.load(channel)
+                                        .map(msgSend -> safeJson(mapper, msgSend))
+                                        .map(session::textMessage)
+                                        .onErrorResume(e -> {
+                                            log.error("Error reading history for channel {}", channel, e);
+                                            return Flux.empty();
+                                        }),
+                                getSink(channel).asFlux()
+                                        .map(msgSend -> safeJson(mapper, msgSend))
+                                        .map(session::textMessage)
+                                        .onErrorResume(e -> {
+                                            log.error("Broadcast error on channel {}", channel, e);
+                                            return Flux.empty();
+                                        })
+                        )
+                )
+                .and(session.receive()
+                        .map(WebSocketMessage::getPayloadAsText)
+                        .flatMap(payload -> parseMessage(payload, session.getId()))
+                        .map(msg -> msg.channel().isBlank() ? msg.withChannel(channel) : msg)
+                        .filter(msg -> msg.content() != null && !msg.content().isBlank())
+                        .filter(msg -> {
+                            if (msg.content().length() > maxMessageLength) {
+                                log.warn("Message too long from {}: length={}", msg.sender(), msg.content().length());
+                                return false;
+                            }
+                            return true;
+                        })
+                        .map(msg -> (msg.timestamp() == 0) ? msg.withTimestamp(System.currentTimeMillis()) : msg)
+                        .flatMap(msg -> {
+                            getSink(msg.channel()).tryEmitNext(msg);
+                            return cacheService.cache(msg.channel(), msg, historyLimit)
+                                    .then(persistenceService.persist(msg));
+                        })
+                        .doOnError(e -> log.error("Error in inbound stream", e))
+                        .then()
+                )
                 .doOnSubscribe(s -> log.debug("WS session opened: {}", session.getId()))
                 .doFinally(sig -> log.debug("WS session closed: {} ({})", session.getId(), sig));
+    }
+
+    private Mono<ChatMessage> parseMessage(String payload, String sessionId) {
+        return Mono.fromCallable(() -> mapper.readValue(payload, ChatMessage.class))
+                .onErrorResume(JsonProcessingException.class, e -> {
+                    log.warn("Invalid payload from session {}: {}", sessionId, payload);
+                    return Mono.empty();
+                });
     }
 }
