@@ -34,6 +34,9 @@ jobs:
             odr-pay:
               - 'order-lifecycle/payment/**'
 
+  # ------------------------
+  # Build & Push CMC
+  # ------------------------
   build-cmc:
     needs: setup
     if: needs.setup.outputs.cmc == 'true'
@@ -52,6 +55,9 @@ jobs:
           docker build -t $IMAGE:$TAG ./communication
           docker push $IMAGE:$TAG
 
+  # ------------------------
+  # Build & Push ODR/CKO
+  # ------------------------
   build-odr-cko:
     needs: setup
     if: needs.setup.outputs.odr-cko == 'true'
@@ -70,6 +76,9 @@ jobs:
           docker build -t $IMAGE:$TAG ./order-lifecycle/checkout
           docker push $IMAGE:$TAG
 
+  # ------------------------
+  # Build & Push ODR/PAY
+  # ------------------------
   build-odr-pay:
     needs: setup
     if: needs.setup.outputs.odr-pay == 'true'
