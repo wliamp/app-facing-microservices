@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - 'releases/**'
+    tags:
+      - '*.*.*'
   pull_request:
     branches:
       - 'releases/**'
+    tags:
+      - '*.*.*'
 
 jobs:
   # ------------------------
@@ -65,9 +69,16 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
-      - name: Extract version from branch name
+      - name: Extract version info
         id: extract_version
-        run: echo "version=${GITHUB_REF_NAME#releases/}" >> $GITHUB_OUTPUT
+        run: |
+          version=""
+          if [[ "${GITHUB_REF}" == refs/heads/releases/* ]]; then
+            version="${GITHUB_REF_NAME#releases/}"
+          elif [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Build & Push Docker image
         uses: docker/build-push-action@v4
@@ -77,4 +88,4 @@ jobs:
           tags: |
             ${{ matrix.image }}:latest
             ${{ matrix.image }}:${{ github.sha }}
-            ${{ matrix.image }}:${{ steps.extract_version.outputs.version }}
+            ${{ steps.extract_version.outputs.version != '' && format('{0}:{1}', matrix.image, steps.extract_version.outputs.version) || '' }}
