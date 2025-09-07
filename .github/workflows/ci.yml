@@ -2,31 +2,26 @@ name: CI Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["dev", "main"]
+  pull_request:
+    branches: ["dev", "main"]
 
 jobs:
-  # ------------------------
-  # Filter changes + setup repo once
-  # ------------------------
   setup:
     runs-on: ubuntu-latest
     outputs:
       cmc: ${{ steps.filter.outputs.cmc }}
       odr-cko: ${{ steps.filter.outputs.odr-cko }}
       odr-pay: ${{ steps.filter.outputs.odr-pay }}
-      workspace: ${{ steps.workspace.outputs.path }}
     steps:
-      # Checkout main repo
       - uses: actions/checkout@v4
 
-      # Checkout configuration repo once
       - uses: actions/checkout@v4
         with:
           repository: wliamp/configurations
           path: config
           token: ${{ secrets.CONFIG_REPO_TOKEN }}
 
-      # Filter changed paths
       - name: Filter changed paths
         id: filter
         uses: dorny/paths-filter@v2
@@ -39,126 +34,47 @@ jobs:
             odr-pay:
               - 'order-lifecycle/payment/**'
 
-      # Pass current workspace path to outputs
-      - id: workspace
-        run: echo "::set-output name=path::${GITHUB_WORKSPACE}"
-
-  # ------------------------
-  # Test CMC
-  # ------------------------
   test-cmc:
     needs: setup
     if: needs.setup.outputs.cmc == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Use checked-out repo
-        run: echo "Workspace already checked out at ${{ github.workspace }}"
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run tests for cmc
+      - name: Run unit tests for cmc
         env:
-          SPRING_PROFILES_ACTIVE: native
-          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+          SPRING_PROFILES_ACTIVE: test
         run: ./gradlew :cmc:clean test
 
-  # ------------------------
-  # Build & Push CMC
-  # ------------------------
-  build-cmc:
-    needs: test-cmc
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build & Push cmc image
-        run: |
-          docker build -t wliamp/communication-service:latest ./communication
-          docker push wliamp/communication-service:latest
-
-  # ------------------------
-  # Test ODR/CKO
-  # ------------------------
   test-odr-cko:
     needs: setup
     if: needs.setup.outputs.odr-cko == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Use checked-out repo
-        run: echo "Workspace already checked out at ${{ github.workspace }}"
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run tests for odr-cko
+      - name: Run unit tests for odr-cko
         env:
-          SPRING_PROFILES_ACTIVE: native
-          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+          SPRING_PROFILES_ACTIVE: test
         run: ./gradlew :odr:cko:clean test
 
-  # ------------------------
-  # Build & Push ODR/CKO
-  # ------------------------
-  build-odr-cko:
-    needs: test-odr-cko
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build & Push odr-cko image
-        run: |
-          docker build -t wliamp/checkout-service:latest ./order-lifecycle/checkout
-          docker push wliamp/checkout-service:latest
-
-  # ------------------------
-  # Test ODR/PAY
-  # ------------------------
   test-odr-pay:
     needs: setup
     if: needs.setup.outputs.odr-pay == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Use checked-out repo
-        run: echo "Workspace already checked out at ${{ github.workspace }}"
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run tests for odr-pay
+      - name: Run unit tests for odr-pay
         env:
-          SPRING_PROFILES_ACTIVE: native
-          SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: ${{ github.workspace }}/config
+          SPRING_PROFILES_ACTIVE: test
         run: ./gradlew :odr:pay:clean test
-
-  # ------------------------
-  # Build & Push ODR/PAY
-  # ------------------------
-  build-odr-pay:
-    needs: test-odr-pay
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build & Push odr-pay image
-        run: |
-          docker build -t wliamp/payment-service:latest ./order-lifecycle/payment
-          docker push wliamp/payment-service:latest
