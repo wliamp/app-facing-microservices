@@ -2,15 +2,11 @@ name: CD Pipeline
 
 on:
   push:
-    branches:
-      - 'releases/**'       # Trigger on any push to release branches
-    tags:
-      - '*.*.*'             # Trigger on semantic version tags (e.g., 1.2.3)
+    branches: ['releases/**']   # Trigger on any push to release branches
+    tags: ['*.*.*']             # Trigger on semantic version tags (e.g., 1.2.3)
   pull_request:
-    branches:
-      - 'releases/**'       # Also trigger on PRs targeting release branches
-    tags:
-      - '*.*.*'             # And PRs opened with version tags
+    branches: ['releases/**']   # Also trigger on PRs targeting release branches
+    tags: ['*.*.*']             # And PRs opened with version tags
 
 jobs:
   # ------------------------

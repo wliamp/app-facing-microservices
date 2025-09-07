@@ -2,25 +2,26 @@ name: CI Pipeline
 
 on:
   push:
-    branches: ["dev"]
+    branches: ["dev"]          # Trigger on push to dev branch
   pull_request:
-    branches: ["dev"]
+    branches: ["dev"]          # Trigger on PR targeting dev branch
 
 jobs:
+  # ------------------------
+  # Detect which services have changed and build a matrix
+  # ------------------------
   setup:
     runs-on: ubuntu-latest
     outputs:
-      cmc: ${{ steps.filter.outputs.cmc }}
-      odr-cko: ${{ steps.filter.outputs.odr-cko }}
-      odr-pay: ${{ steps.filter.outputs.odr-pay }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4  # Checkout the repository source code
 
       - name: Filter changed paths
         id: filter
         uses: dorny/paths-filter@v2
         with:
-          filters: |
+          filters: |             # Define path filters for each service
             cmc:
               - 'communication/**'
             odr-cko:
@@ -28,19 +29,42 @@ jobs:
             odr-pay:
               - 'order-lifecycle/payment/**'
 
-  test-cmc:
-    needs: setup
-    if: needs.setup.outputs.cmc == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+        # Build a dynamic JSON matrix of services that changed
+          services=()
 
-      - uses: actions/setup-java@v3
+          if [[ "${{ steps.filter.outputs.cmc }}" == "true" ]]; then
+            services+=('{"service":"cmc","gradleTask":":cmc","reportPath":"cmc/build/reports"}')
+          fi
+          if [[ "${{ steps.filter.outputs.odr-cko }}" == "true" ]]; then
+            services+=('{"service":"odr-cko","gradleTask":":odr:cko","reportPath":"order-lifecycle/checkout/build/reports"}')
+          fi
+          if [[ "${{ steps.filter.outputs.odr-pay }}" == "true" ]]; then
+            services+=('{"service":"odr-pay","gradleTask":":odr:pay","reportPath":"order-lifecycle/payment/build/reports"}')
+          fi
+
+        # Export the matrix as job output
+          echo "matrix=$(jq -c -n --argjson s "[${services[*]}]" '{include: $s}')" >> $GITHUB_OUTPUT
+
+  # ------------------------
+  # Run static checks, tests, build, and coverage for each service
+  # ------------------------
+  test:
+    needs: setup
+    if: needs.setup.outputs.matrix != '{"include":[]}'   # Skip if no service has changed
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }} # Execute once per changed service
+    steps:
+      - uses: actions/checkout@v4  # Checkout source code for the job
+
+      - uses: actions/setup-java@v3 # Set up JDK 21 (Temurin distribution)
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v4      # Cache Gradle dependencies to speed up builds
         with:
           path: |
             ~/.gradle/caches
@@ -50,97 +74,19 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run static checks (Checkstyle/Spotbugs)
-        run: ./gradlew :cmc:check
+        run: ./gradlew ${{ matrix.gradleTask }}:check
 
       - name: Run tests + build + coverage
         env:
-          SPRING_PROFILES_ACTIVE: test
-        run: ./gradlew :cmc:clean build jacocoTestReport
+          SPRING_PROFILES_ACTIVE: test  # Activate test profile for Spring Boot
+        run: ./gradlew ${{ matrix.gradleTask }}:clean build jacocoTestReport
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cmc-test-report
-          path: cmc/build/reports/tests/test
+          name: ${{ matrix.service }}-test-report      # Upload test reports
+          path: ${{ matrix.reportPath }}/tests/test
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cmc-coverage-report
-          path: cmc/build/reports/jacoco/test/html
-
-  test-odr-cko:
-    needs: setup
-    if: needs.setup.outputs.odr-cko == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Run static checks
-        run: ./gradlew :odr:cko:check
-
-      - name: Run tests + build + coverage
-        env:
-          SPRING_PROFILES_ACTIVE: test
-        run: ./gradlew :odr:cko:clean build jacocoTestReport
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: odr-cko-test-report
-          path: order-lifecycle/checkout/build/reports/tests/test
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: odr-cko-coverage-report
-          path: order-lifecycle/checkout/build/reports/jacoco/test/html
-
-  test-odr-pay:
-    needs: setup
-    if: needs.setup.outputs.odr-pay == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Run static checks
-        run: ./gradlew :odr:pay:check
-
-      - name: Run tests + build + coverage
-        env:
-          SPRING_PROFILES_ACTIVE: test
-        run: ./gradlew :odr:pay:clean build jacocoTestReport
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: odr-pay-test-report
-          path: order-lifecycle/payment/build/reports/tests/test
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: odr-pay-coverage-report
-          path: order-lifecycle/payment/build/reports/jacoco/test/html
+          name: ${{ matrix.service }}-coverage-report  # Upload code coverage reports
+          path: ${{ matrix.reportPath }}/jacoco/test/html
