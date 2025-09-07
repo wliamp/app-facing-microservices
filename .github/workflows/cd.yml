@@ -2,9 +2,11 @@ name: CD Pipeline
 
 on:
   push:
-    branches: ["main"]
-  release:
-    types: [published]
+    branches:
+      - 'releases/**'
+  pull_request:
+    branches:
+      - 'releases/**'
 
 jobs:
   # ------------------------
@@ -63,6 +65,10 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
+      - name: Extract version from branch name
+        id: extract_version
+        run: echo "version=${GITHUB_REF_NAME#releases/}" >> $GITHUB_OUTPUT
+
       - name: Build & Push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -71,4 +77,4 @@ jobs:
           tags: |
             ${{ matrix.image }}:latest
             ${{ matrix.image }}:${{ github.sha }}
-            ${{ startsWith(github.ref, 'refs/tags/') && format('{0}:{1}', matrix.image, github.ref_name) || '' }}
+            ${{ matrix.image }}:${{ steps.extract_version.outputs.version }}
