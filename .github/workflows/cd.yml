@@ -89,3 +89,39 @@ jobs:
             ${{ matrix.image }}:latest
             ${{ matrix.image }}:${{ github.sha }}
             ${{ steps.extract_version.outputs.version != '' && format('{0}:{1}', matrix.image, steps.extract_version.outputs.version) || '' }}
+
+  # ------------------------
+  # deploy to Kubernetes
+  # ------------------------
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+
+      - name: Extract version
+        id: extract_version
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF_NAME#releases/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy service to Kubernetes
+        run: |
+          IMAGE=${{ matrix.image }}:${{ steps.extract_version.outputs.version }}
+          echo "Deploying $IMAGE ..."
+
+          kubectl set image deployment/${{ matrix.service }} \
+            ${{ matrix.service }}=$IMAGE \
+            -n production
+
+          kubectl rollout status deployment/${{ matrix.service }} -n production
